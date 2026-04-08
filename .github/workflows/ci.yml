@@ -1,0 +1,52 @@
+name: GRC Policy CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  opa-lint:
+    name: OPA Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install OPA
+        run: |
+          curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64_static
+          chmod +x opa
+          sudo mv opa /usr/local/bin/opa
+          opa version
+
+      - name: Lint OPA policies
+        run: |
+          opa fmt --diff policies/
+
+      - name: Run OPA tests
+        run: |
+          opa test policies/ -v
+
+  python-smoke-tests:
+    name: Python Smoke Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Run smoke tests
+        run: |
+          python -m pytest scripts/tests/ -v --tb=short
