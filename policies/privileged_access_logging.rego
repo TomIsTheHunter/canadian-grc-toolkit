@@ -24,7 +24,7 @@ allow if {
 violation contains {"msg": msg} if {
   evt := input.event
   field := required_fields[_]
-  not evt[field]
+  not field in object.keys(evt)
   msg := sprintf("missing required field %q", [field])
 }
 
