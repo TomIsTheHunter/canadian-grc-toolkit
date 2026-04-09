@@ -1,0 +1,57 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: OSFI B-13 Policy Configuration
+type: object
+required:
+  - institution_name
+  - controls
+properties:
+  institution_name:
+    type: string
+    minLength: 1
+  controls:
+    type: object
+    required:
+      - data_residency
+      - privileged_access_logging
+      - encryption_at_rest
+    properties:
+      data_residency:
+        type: object
+        required:
+          - allowed_regions
+        properties:
+          allowed_regions:
+            type: array
+            minItems: 1
+            items:
+              type: string
+      privileged_access_logging:
+        type: object
+        required:
+          - required_fields
+          - approved_destinations
+        properties:
+          required_fields:
+            type: array
+            minItems: 1
+            items:
+              type: string
+          approved_destinations:
+            type: array
+            minItems: 1
+            items:
+              type: string
+      encryption_at_rest:
+        type: object
+        required:
+          - approved_algorithms
+          - require_cmk_for_sensitive
+        properties:
+          approved_algorithms:
+            type: array
+            minItems: 1
+            items:
+              type: string
+          require_cmk_for_sensitive:
+            type: boolean
+additionalProperties: false
