@@ -37,6 +37,16 @@ Canadian data sovereignty requirements.
 	algorithms, that sensitive resources use customer-managed keys (CMK), and
 	that key rotation is enabled.
 
+## Python Tooling
+
+- Config Validator: `scripts/config_validator.py` validates YAML policy
+	configuration against the OSFI B-13 schema in
+	`scripts/schema/osfi_b13_policy_schema.yaml`.
+
+- Audit Log Parser: `scripts/audit_log_parser.py` parses privileged access log
+	JSONL files and flags missing requirements aligned with OSFI incident
+	reporting expectations.
+
 ## CI/CD
 
 Every push runs:
@@ -70,4 +80,4 @@ python -m pytest scripts/tests/ -v
 | Week | Deliverable | Status |
 |---|---|---|
 | Week 1 | Repo setup, folder structure | Complete |
-| Week 2 | OPA policies, OSCAL JSON, Python scripts | In progress |
+| Week 2 | OPA policies, OSCAL JSON, Python scripts | Complete |

@@ -1,0 +1,8 @@
+# Default owner for the repository
+* @TomIsTheHunter
+
+# Compliance-critical areas
+/policies/ @TomIsTheHunter
+/oscal/ @TomIsTheHunter
+/scripts/ @TomIsTheHunter
+/.github/workflows/ @TomIsTheHunter

@@ -1,0 +1,61 @@
+{
+  "catalog": {
+    "uuid": "8f4f8f9f-e540-4a9f-a2e7-ec90c82ab1f6",
+    "metadata": {
+      "title": "OSFI B-13 Control Subset",
+      "last-modified": "2026-04-09T00:00:00Z",
+      "version": "1.0.0",
+      "oscal-version": "1.1.2"
+    },
+    "groups": [
+      {
+        "id": "osfi-b13",
+        "title": "OSFI B-13 Technology and Cyber Risk",
+        "controls": [
+          {
+            "id": "B13-IR-01",
+            "title": "Incident Reporting Timeliness",
+            "props": [
+              { "name": "source", "value": "OSFI B-13" },
+              { "name": "domain", "value": "Incident Response" }
+            ],
+            "parts": [
+              {
+                "name": "statement",
+                "prose": "The institution defines and enforces timelines for identifying, triaging, and reporting material cyber incidents."
+              }
+            ]
+          },
+          {
+            "id": "B13-LA-01",
+            "title": "Privileged Access Logging",
+            "props": [
+              { "name": "source", "value": "OSFI B-13" },
+              { "name": "domain", "value": "Logging and Monitoring" }
+            ],
+            "parts": [
+              {
+                "name": "statement",
+                "prose": "Privileged activities are logged with actor identity, authentication context, event type, and timestamp in tamper-evident stores."
+              }
+            ]
+          },
+          {
+            "id": "B13-DP-01",
+            "title": "Data Protection at Rest",
+            "props": [
+              { "name": "source", "value": "OSFI B-13" },
+              { "name": "domain", "value": "Data Protection" }
+            ],
+            "parts": [
+              {
+                "name": "statement",
+                "prose": "Sensitive and critical information assets are protected with approved encryption-at-rest controls and key management practices."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
