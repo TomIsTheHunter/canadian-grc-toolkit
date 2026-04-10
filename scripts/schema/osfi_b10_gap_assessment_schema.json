@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OSFI B-10 Third-Party Risk Gap Assessment",
+  "type": "object",
+  "required": [
+    "assessment_metadata",
+    "arrangement_classification",
+    "subcontracting_controls",
+    "concentration_risk",
+    "data_residency",
+    "audit_rights",
+    "exit_strategy"
+  ],
+  "properties": {
+    "assessment_metadata": {
+      "type": "object",
+      "required": [
+        "frfi_name",
+        "arrangement_name",
+        "arrangement_classification",
+        "assessment_date"
+      ],
+      "properties": {
+        "frfi_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arrangement_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arrangement_classification": {
+          "type": "string",
+          "enum": [
+            "critical",
+            "non-critical"
+          ]
+        },
+        "assessment_date": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrangement_classification": {
+      "$ref": "#/$defs/arrangement_classification_domain"
+    },
+    "subcontracting_controls": {
+      "$ref": "#/$defs/subcontracting_controls_domain"
+    },
+    "concentration_risk": {
+      "$ref": "#/$defs/concentration_risk_domain"
+    },
+    "data_residency": {
+      "$ref": "#/$defs/data_residency_domain"
+    },
+    "audit_rights": {
+      "$ref": "#/$defs/audit_rights_domain"
+    },
+    "exit_strategy": {
+      "$ref": "#/$defs/exit_strategy_domain"
+    }
+  },
+  "$defs": {
+    "requirement": {
+      "type": "object",
+      "required": [
+        "requirement_id",
+        "b10_citation",
+        "requirement_text",
+        "current_state",
+        "gap_description",
+        "severity",
+        "evidence_ref",
+        "remediation_owner",
+        "target_date",
+        "status"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "b10_citation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirement_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_state": {
+          "type": "string",
+          "enum": [
+            "Not Started",
+            "In Progress",
+            "Documented",
+            "Tested"
+          ]
+        },
+        "gap_description": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "Critical",
+            "High",
+            "Medium",
+            "Low",
+            "Compliant"
+          ]
+        },
+        "evidence_ref": {
+          "type": "string"
+        },
+        "remediation_owner": {
+          "type": "string"
+        },
+        "target_date": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrangement_classification_domain": {
+      "type": "object",
+      "required": [
+        "criticality_determination_logic",
+        "classification_rationale",
+        "review_frequency"
+      ],
+      "properties": {
+        "criticality_determination_logic": {
+          "$ref": "#/$defs/requirement"
+        },
+        "classification_rationale": {
+          "$ref": "#/$defs/requirement"
+        },
+        "review_frequency": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "subcontracting_controls_domain": {
+      "type": "object",
+      "required": [
+        "fourth_party_inventory",
+        "subcontractor_approval_process",
+        "flow_down_contract_requirements",
+        "fourth_party_concentration"
+      ],
+      "properties": {
+        "fourth_party_inventory": {
+          "$ref": "#/$defs/requirement"
+        },
+        "subcontractor_approval_process": {
+          "$ref": "#/$defs/requirement"
+        },
+        "flow_down_contract_requirements": {
+          "$ref": "#/$defs/requirement"
+        },
+        "fourth_party_concentration": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "concentration_risk_domain": {
+      "type": "object",
+      "required": [
+        "single_vendor_dependency_thresholds",
+        "systemic_concentration_flags",
+        "sector_wide_provider_indicators",
+        "osfi_concentration_reporting_obligations"
+      ],
+      "properties": {
+        "single_vendor_dependency_thresholds": {
+          "$ref": "#/$defs/requirement"
+        },
+        "systemic_concentration_flags": {
+          "$ref": "#/$defs/requirement"
+        },
+        "sector_wide_provider_indicators": {
+          "$ref": "#/$defs/requirement"
+        },
+        "osfi_concentration_reporting_obligations": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data_residency_domain": {
+      "type": "object",
+      "required": [
+        "data_location_mapping",
+        "sovereignty_restrictions",
+        "cross_border_transfer_controls",
+        "residency_clause_in_contract"
+      ],
+      "properties": {
+        "data_location_mapping": {
+          "$ref": "#/$defs/requirement"
+        },
+        "sovereignty_restrictions": {
+          "$ref": "#/$defs/requirement"
+        },
+        "cross_border_transfer_controls": {
+          "$ref": "#/$defs/requirement"
+        },
+        "residency_clause_in_contract": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "audit_rights_domain": {
+      "type": "object",
+      "required": [
+        "right_to_audit_clause_presence",
+        "scope_of_audit_rights",
+        "third_party_audit_report_access",
+        "audit_frequency_minimum"
+      ],
+      "properties": {
+        "right_to_audit_clause_presence": {
+          "$ref": "#/$defs/requirement"
+        },
+        "scope_of_audit_rights": {
+          "$ref": "#/$defs/requirement"
+        },
+        "third_party_audit_report_access": {
+          "$ref": "#/$defs/requirement"
+        },
+        "audit_frequency_minimum": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "exit_strategy_domain": {
+      "type": "object",
+      "required": [
+        "documented_exit_plan_existence",
+        "transition_rto_rpo",
+        "transition_service_agreement",
+        "data_return_destruction_clause",
+        "tested_exit_rehearsal"
+      ],
+      "properties": {
+        "documented_exit_plan_existence": {
+          "$ref": "#/$defs/requirement"
+        },
+        "transition_rto_rpo": {
+          "$ref": "#/$defs/requirement"
+        },
+        "transition_service_agreement": {
+          "$ref": "#/$defs/requirement"
+        },
+        "data_return_destruction_clause": {
+          "$ref": "#/$defs/requirement"
+        },
+        "tested_exit_rehearsal": {
+          "$ref": "#/$defs/requirement"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

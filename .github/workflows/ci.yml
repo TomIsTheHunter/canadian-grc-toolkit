@@ -50,3 +50,12 @@ jobs:
       - name: Run smoke tests
         run: |
           python -m pytest scripts/tests/ -v --tb=short
+
+      - name: Validate OSFI B-10 CLI entrypoint
+        run: |
+          python scripts/osfi_b10_gap_assessment.py --template /tmp/b10_template.json
+          python -c "import json; json.loads(open('/tmp/b10_template.json').read())"
+
+      - name: Validate Checkov gap report CLI entrypoint
+        run: |
+          python scripts/checkov_gap_report.py --help

@@ -1,4 +1,4 @@
-# Temporary Walkthrough: Canadian GRC Toolkit
+# Walkthrough: Canadian GRC Toolkit
 
 Audience: Non-technical readers, project stakeholders, and new team members.
 Purpose: Explain what this project does, why each part exists, and why we chose these approaches over common alternatives.
@@ -76,12 +76,16 @@ Location: scripts
 What it contains:
 - Config validator: checks YAML config against an OSFI B-13 schema
 - Audit log parser: scans privileged access logs for missing required details
-- Unit tests for both scripts
-- Schema file used by validator
+- Checkov gap report: parses Checkov JSON scanner output into a formatted compliance gap report
+- OSFI B-10 gap assessment tool: assesses the FRFI's internal compliance posture across six B-10 domains
+- Unit tests for each script
+- Schema files used by the validator and B-10 assessment
 
 Why this matters:
 - The validator prevents bad or incomplete configuration from silently entering operations.
 - The parser identifies logging gaps tied to incident reporting obligations.
+- The Checkov gap report turns raw infrastructure-as-code scan output into an audit-ready summary showing failed controls, skipped controls (with suppression reasons), and overall pass rate.
+- The B-10 gap assessment tool provides a structured, machine-readable way to evaluate the FRFI's own third-party risk management posture — not vendor self-attestation — across arrangement classification, subcontracting, concentration, data residency, audit rights, and exit strategy. It flags supervisory risk items for critical arrangements and generates a completed or blank assessment file on demand.
 
 Why Python for these tools:
 - Easy readability for mixed teams.
@@ -114,11 +118,14 @@ Location: .github/workflows/ci.yml
 
 What it does:
 - Runs OPA formatting and policy tests
-- Runs Python tests
+- Runs Python tests (covers config validator, audit log parser, Checkov gap report, and all B-10 assessment logic)
+- Validates the OSFI B-10 CLI can generate a template and produces valid JSON
+- Validates the Checkov gap report CLI accepts its arguments without error
 
 Why this matters:
 - Prevents untested changes from being merged.
 - Provides objective pass/fail evidence per change.
+- CLI entrypoint validation catches import errors and wiring problems that unit tests alone may not surface.
 
 Why CI checks instead of trusting local testing only:
 - Local runs vary by machine and can be skipped.
@@ -132,7 +139,10 @@ Completed deliverables:
 - OSCAL JSON document created with 3 B-13 controls
 - Python config validator written and tested
 - Python audit log parser written and tested
-- README updated with purpose and framework coverage
+- Python Checkov gap report script written (parses passed/failed/skipped checks, filtered console report with tabulate, optional CSV export, --framework and --severity flags)
+- Python OSFI B-10 gap assessment tool written and tested (six-domain JSON schema, compliance scoring, supervisory risk detection, template generation, CSV export)
+- CI workflow updated with CLI entrypoint validation steps for both new scripts
+- README updated with B-10 framework coverage, new tooling descriptions, and example commands
 
 ## 6) Why we did not choose other broader paths yet
 
@@ -165,15 +175,3 @@ Requires GitHub repository settings (outside regular files):
 - Push restrictions and merge restrictions
 
 These settings are controlled in GitHub repository administration and are not fully enforceable from source files alone.
-
-## 9) Suggested next phase (week 3+)
-
-- Expand control set beyond initial three controls
-- Add sample input/output evidence packs for audits
-- Add CODEOWNERS and PR template governance files if not already present
-- Enable stricter branch protection with required checks on main
-
----
-
-Temporary note:
-This file is intentionally written as onboarding support for non-technical readers and can be removed once the team has absorbed the workflow.
