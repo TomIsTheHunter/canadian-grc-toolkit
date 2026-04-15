@@ -21,3 +21,6 @@ htmlcov/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Generated report outputs (produced by scripts at runtime)
+reports/

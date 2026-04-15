@@ -50,3 +50,23 @@ jobs:
       - name: Run smoke tests
         run: |
           python -m pytest scripts/tests/ -v --tb=short
+
+        - name: Validate risk register CLI — template generation
+          run: |
+            python -m scripts.risk_register --template --output-json reports/risk_register_template.json
+            python -c "import json; d=json.load(open('reports/risk_register_template.json')); assert 'risks' in d, 'template missing risks key'"
+
+        - name: Validate risk register CLI — sample register processing
+          run: |
+            python -m scripts.risk_register \
+              --input scripts/sample_risk_register.json \
+              --output-json reports/risk_register_output.json \
+              --output-md reports/risk_register_report.md
+            python -c "
+            import json
+            d = json.load(open('reports/risk_register_output.json'))
+            assert all('rag_status' in r for r in d['risks']), 'missing rag_status'
+            assert all('score' in r['residual_risk'] for r in d['risks']), 'missing residual score'
+            assert all(r['rag_status'] in ('Red','Amber','Green') for r in d['risks']), 'invalid RAG'
+            print(f'[✓] {len(d[\"risks\"])} risks validated in output JSON')
+            "

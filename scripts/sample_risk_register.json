@@ -1,0 +1,148 @@
+{
+  "register_metadata": {
+    "title": "OSFI Risk Register — Canadian GRC Toolkit (Sample)",
+    "version": "1.0",
+    "created_by": "Risk Management Team",
+    "review_cycle": "quarterly",
+    "description": "Sample risk register demonstrating OSFI B-10, B-13, and E-21 aligned risk entries with inherent/residual scoring and automated RAG status."
+  },
+  "risks": [
+    {
+      "id": "RISK-001",
+      "title": "End-of-Life Operating Systems in Production",
+      "description": "Several production servers are running operating system versions that have reached end-of-life and no longer receive security patches, exposing the institution to known vulnerabilities.",
+      "category": "technology",
+      "osfi_reference": "OSFI B-13 §3.2 – Technology Asset Management",
+      "inherent_risk": {
+        "likelihood": 4,
+        "impact": 5
+      },
+      "controls": [
+        "Compensating network segmentation isolating EOL systems from internet-facing zones",
+        "Enhanced IDS/IPS monitoring on segments hosting EOL assets",
+        "Approved exception process with quarterly CISO sign-off",
+        "Migration project initiated with target completion Q3 2026"
+      ],
+      "residual_risk": {
+        "likelihood": 3,
+        "impact": 4
+      },
+      "owner": "CISO",
+      "review_date": "2026-06-30"
+    },
+    {
+      "id": "RISK-002",
+      "title": "Ransomware Attack on Core Banking Infrastructure",
+      "description": "Threat actors could deploy ransomware against core banking systems, encrypting data and disrupting operations, potentially triggering OSFI incident reporting obligations under B-13.",
+      "category": "cyber",
+      "inherent_risk": {
+        "likelihood": 3,
+        "impact": 5
+      },
+      "controls": [
+        "Immutable offline backups tested quarterly with documented recovery time objectives",
+        "EDR/XDR solution deployed across all endpoints and servers",
+        "Network micro-segmentation limiting lateral movement",
+        "Privileged access workstations (PAWs) enforced for administrative tasks",
+        "Annual tabletop exercise for ransomware scenario response"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 4
+      },
+      "owner": "VP Cybersecurity",
+      "review_date": "2026-06-30"
+    },
+    {
+      "id": "RISK-003",
+      "title": "Fourth-Party Risk from Critical Cloud Provider",
+      "description": "A tier-1 critical third-party vendor relies on a sub-processor for data processing. Failure or security incident at the sub-processor could impact service continuity without the institution having direct contractual oversight.",
+      "category": "third-party",
+      "osfi_reference": "OSFI B-10 §4 – Subcontracting and Fourth-Party Risk",
+      "inherent_risk": {
+        "likelihood": 2,
+        "impact": 5
+      },
+      "controls": [
+        "Contractual clause requiring vendor to notify institution of material sub-processor changes within 10 business days",
+        "Annual third-party risk assessment including sub-processor review",
+        "Concentration risk assessment identifying alternative vendors"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 4
+      },
+      "owner": "Chief Risk Officer",
+      "review_date": "2026-09-30"
+    },
+    {
+      "id": "RISK-004",
+      "title": "Unauthorized Cross-Border Data Transfer",
+      "description": "Personal information of Quebec residents may be transferred to jurisdictions lacking equivalent privacy protections, creating regulatory exposure under Quebec Law 25 and PIPEDA breach obligations.",
+      "category": "data",
+      "osfi_reference": "Quebec Law 25 §17 / PIPEDA – Cross-Border Data Transfer",
+      "inherent_risk": {
+        "likelihood": 3,
+        "impact": 4
+      },
+      "controls": [
+        "Data residency OPA policy enforcing approved Canadian regions at deployment",
+        "Data classification tagging applied to all personal information repositories",
+        "Privacy Impact Assessment (PIA) mandatory for new third-party data sharing",
+        "Quarterly data flow mapping review with Privacy Officer sign-off"
+      ],
+      "residual_risk": {
+        "likelihood": 1,
+        "impact": 4
+      },
+      "owner": "Chief Privacy Officer",
+      "review_date": "2026-06-30"
+    },
+    {
+      "id": "RISK-005",
+      "title": "Undetected Privileged Access Abuse",
+      "description": "A malicious or compromised privileged user could exfiltrate sensitive data or make unauthorized configuration changes if privileged session activity is not comprehensively logged and monitored.",
+      "category": "operational",
+      "osfi_reference": "OSFI B-13 §5 – Access Controls / OSFI E-21 §3",
+      "inherent_risk": {
+        "likelihood": 3,
+        "impact": 5
+      },
+      "controls": [
+        "Privileged Access Management (PAM) solution enforcing just-in-time access",
+        "Privileged session logging policy (OPA) validating required fields on all events",
+        "SIEM alerts on anomalous privileged access patterns",
+        "Quarterly access recertification reviews"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 3
+      },
+      "owner": "Director, Identity & Access Management",
+      "review_date": "2026-09-30"
+    },
+    {
+      "id": "RISK-006",
+      "title": "AI Model Producing Biased Credit Decisions",
+      "description": "A machine learning model used in credit adjudication could produce systematically biased outcomes, exposing the institution to regulatory action under OSFI E-23 and reputational harm.",
+      "category": "operational",
+      "osfi_reference": "OSFI E-23 – Model Risk Management",
+      "inherent_risk": {
+        "likelihood": 3,
+        "impact": 4
+      },
+      "controls": [
+        "Independent model validation performed before production deployment",
+        "Bias and fairness testing across protected demographic segments",
+        "Human-in-the-loop review for edge cases flagged by the model",
+        "Model performance monitoring dashboard reviewed monthly by model risk team"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 3
+      },
+      "owner": "Chief Model Risk Officer",
+      "review_date": "2026-09-30"
+    }
+  ]
+}
