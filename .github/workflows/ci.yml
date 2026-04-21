@@ -30,6 +30,31 @@ jobs:
         run: |
           opa test policies/ -v
 
+  python-lint:
+    name: Python Lint (ruff + black)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lint tools
+        run: |
+          pip install ruff==0.11.13 black==24.10.0
+
+      - name: Run ruff
+        run: |
+          ruff check scripts
+
+      - name: Run black check
+        run: |
+          black --check scripts
+
   python-smoke-tests:
     name: Python Smoke Tests
     runs-on: ubuntu-latest
@@ -49,24 +74,33 @@ jobs:
 
       - name: Run smoke tests
         run: |
-          python -m pytest scripts/tests/ -v --tb=short
+          python scripts/task_runner.py test
 
-        - name: Validate risk register CLI — template generation
-          run: |
-            python -m scripts.risk_register --template --output-json reports/risk_register_template.json
-            python -c "import json; d=json.load(open('reports/risk_register_template.json')); assert 'risks' in d, 'template missing risks key'"
+      - name: Validate risk register CLI - template generation
+        run: |
+          python -m scripts.risk_register --template --output-json reports/risk_register_template.json
+          python -c "import json, pathlib; data=json.loads(pathlib.Path('reports/risk_register_template.json').read_text(encoding='utf-8')); assert 'risks' in data, 'template missing risks key'"
 
-        - name: Validate risk register CLI — sample register processing
-          run: |
-            python -m scripts.risk_register \
-              --input scripts/sample_risk_register.json \
-              --output-json reports/risk_register_output.json \
-              --output-md reports/risk_register_report.md
-            python -c "
-            import json
-            d = json.load(open('reports/risk_register_output.json'))
-            assert all('rag_status' in r for r in d['risks']), 'missing rag_status'
-            assert all('score' in r['residual_risk'] for r in d['risks']), 'missing residual score'
-            assert all(r['rag_status'] in ('Red','Amber','Green') for r in d['risks']), 'invalid RAG'
-            print(f'[✓] {len(d[\"risks\"])} risks validated in output JSON')
-            "
+      - name: Validate risk register CLI - sample register processing
+        run: |
+          python scripts/task_runner.py report-risk
+          python -c "import json, pathlib; data=json.loads(pathlib.Path('reports/risk_register_output.json').read_text(encoding='utf-8')); assert all('rag_status' in risk for risk in data['risks']), 'missing rag_status'; assert all('score' in risk['residual_risk'] for risk in data['risks']), 'missing residual score'; assert all(risk['rag_status'] in ('Red','Amber','Green') for risk in data['risks']), 'invalid RAG'; print('[ok] validated risk register output')"
+
+      - name: Validate GRC KPI dashboard generation
+        run: |
+          python scripts/task_runner.py report-kpi
+          python -c "from pathlib import Path; content=Path('reports/grc_kpi_dashboard.md').read_text(encoding='utf-8'); assert 'Executive Summary' in content; assert 'Trend Vs Prior Period' in content"
+
+      - name: Validate incident classifier CLI
+        run: |
+          python scripts/task_runner.py classify-incident
+          python -c "import json, pathlib; data=json.loads(pathlib.Path('reports/notification_draft.json').read_text(encoding='utf-8')); assert data['regulatory_assessment']['osfi']['reportable_event_count'] >= 1; assert 'events' in data and len(data['events']) >= 1"
+
+      - name: Validate FAIR calculator CLI
+        run: |
+          python scripts/task_runner.py fair
+          python -c "import json, pathlib; data=json.loads(pathlib.Path('reports/fair_results.json').read_text(encoding='utf-8')); assert data['simulation']['iterations'] == 2000; assert data['risk_tier'] in {'LOW','MEDIUM','HIGH','CRITICAL'}"
+
+      - name: Validate golden report snapshots
+        run: |
+          python -m pytest scripts/tests/test_report_goldens.py -q

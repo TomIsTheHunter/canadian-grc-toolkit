@@ -33,14 +33,14 @@ from scripts.risk_register import (
 def _make_entry(**overrides) -> dict:
     """Return a minimal valid risk entry, with optional field overrides."""
     base = {
-        "id":          "RISK-001",
-        "title":       "Unpatched Systems",
+        "id": "RISK-001",
+        "title": "Unpatched Systems",
         "description": "Critical systems running end-of-life software.",
-        "category":    "technology",
+        "category": "technology",
         "inherent_risk": {"likelihood": 4, "impact": 5},
-        "controls":    ["Automated patch management", "Monthly vulnerability scanning"],
+        "controls": ["Automated patch management", "Monthly vulnerability scanning"],
         "residual_risk": {"likelihood": 2, "impact": 3},
-        "owner":       "CISO",
+        "owner": "CISO",
         "review_date": "2026-09-30",
     }
     base.update(overrides)
@@ -51,9 +51,9 @@ def _make_register(*entries) -> dict:
     """Wrap one or more entries in a valid register envelope."""
     return {
         "register_metadata": {
-            "title":        "Test Risk Register",
-            "version":      "1.0",
-            "created_by":   "Test Suite",
+            "title": "Test Risk Register",
+            "version": "1.0",
+            "created_by": "Test Suite",
             "review_cycle": "quarterly",
         },
         "risks": list(entries),
@@ -65,14 +65,17 @@ def _make_register(*entries) -> dict:
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("score,expected", [
-    (1,  "Green"),
-    (7,  "Green"),
-    (8,  "Amber"),
-    (14, "Amber"),
-    (15, "Red"),
-    (25, "Red"),
-])
+@pytest.mark.parametrize(
+    "score,expected",
+    [
+        (1, "Green"),
+        (7, "Green"),
+        (8, "Amber"),
+        (14, "Amber"),
+        (15, "Red"),
+        (25, "Red"),
+    ],
+)
 def test_calculate_rag_boundaries(score: int, expected: str) -> None:
     assert calculate_rag(score) == expected
 
@@ -89,7 +92,7 @@ def test_enrich_entry_inherent_score() -> None:
 
 def test_enrich_entry_residual_score_and_rag_green() -> None:
     result = _enrich_entry(_make_entry(residual_risk={"likelihood": 2, "impact": 3}))
-    assert result["residual_risk"]["score"] == 6   # 2 × 3
+    assert result["residual_risk"]["score"] == 6  # 2 × 3
     assert result["rag_status"] == "Green"
 
 
@@ -151,8 +154,12 @@ def test_process_register_valid_multiple_entries() -> None:
     entries = [
         _make_entry(id="RISK-001", title="Risk One"),
         _make_entry(id="RISK-002", title="Risk Two", category="cyber"),
-        _make_entry(id="RISK-003", title="Risk Three", category="data",
-                    residual_risk={"likelihood": 5, "impact": 5}),  # Red
+        _make_entry(
+            id="RISK-003",
+            title="Risk Three",
+            category="data",
+            residual_risk={"likelihood": 5, "impact": 5},
+        ),  # Red
     ]
     result = process_register(_make_register(*entries))
     assert len(result["risks"]) == 3

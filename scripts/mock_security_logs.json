@@ -1,0 +1,53 @@
+[
+  {
+    "event_id": "EVT-1001",
+    "detected_at": "2026-04-18T08:15:00Z",
+    "contained_at": "2026-04-18T09:10:00Z",
+    "event_type": "credential_compromise",
+    "severity": "high",
+    "systems_affected": ["online_banking_api", "ciam"],
+    "service_disruption_minutes": 45,
+    "financial_loss_cad": 25000,
+    "third_party_involved": false,
+    "personal_data_compromised": true,
+    "exfiltration_confirmed": true,
+    "records_affected": 12000,
+    "data_types": ["email", "account_number", "dob"],
+    "critical_operation_impacted": true,
+    "description": "Suspicious privileged login and credential stuffing activity."
+  },
+  {
+    "event_id": "EVT-1002",
+    "detected_at": "2026-04-18T08:50:00Z",
+    "contained_at": "2026-04-18T09:30:00Z",
+    "event_type": "payment_outage",
+    "severity": "high",
+    "systems_affected": ["payments_switch", "interac_gateway"],
+    "service_disruption_minutes": 95,
+    "financial_loss_cad": 180000,
+    "third_party_involved": false,
+    "personal_data_compromised": false,
+    "exfiltration_confirmed": false,
+    "records_affected": 0,
+    "data_types": [],
+    "critical_operation_impacted": true,
+    "description": "Payment authorization unavailable for card and e-transfer channels."
+  },
+  {
+    "event_id": "EVT-1003",
+    "detected_at": "2026-04-18T10:20:00Z",
+    "contained_at": "2026-04-18T11:15:00Z",
+    "event_type": "third_party_breach",
+    "severity": "medium",
+    "systems_affected": ["vendor_sftp"],
+    "service_disruption_minutes": 15,
+    "financial_loss_cad": 0,
+    "third_party_involved": true,
+    "personal_data_compromised": true,
+    "exfiltration_confirmed": false,
+    "records_affected": 220,
+    "data_types": ["name", "email"],
+    "critical_operation_impacted": false,
+    "description": "Third-party file transfer platform reported unauthorized session."
+  }
+]

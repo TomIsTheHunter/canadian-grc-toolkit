@@ -1,0 +1,45 @@
+{
+  "scenario_name": "Ransomware Attack on Core Banking Platform",
+  "scenario_description": "OSFI-reportable ransomware event targeting the bank's core payment processing infrastructure. Includes regulatory fines under OSFI and PIPEDA as secondary loss.",
+  "simulation": {
+    "iterations": 100000
+  },
+  "inputs": {
+    "threat_event_frequency_per_year": {
+      "min": 0.1,
+      "most_likely": 0.5,
+      "max": 2.0
+    },
+    "vulnerability_probability": {
+      "min": 0.05,
+      "most_likely": 0.2,
+      "max": 0.4
+    },
+    "primary_loss_magnitude_cad": {
+      "min": 500000.0,
+      "most_likely": 3500000.0,
+      "max": 15000000.0
+    },
+    "secondary_loss_magnitude_cad": {
+      "min": 100000.0,
+      "most_likely": 750000.0,
+      "max": 5000000.0
+    }
+  },
+  "annualised_loss_exposure_cad": {
+    "minimum_P10": 234520.73,
+    "most_likely_mode": 311285.79,
+    "median_P50": 703578.08,
+    "maximum_P90": 1805231.03,
+    "tail_P95": 2262733.64,
+    "mean": 891855.88,
+    "standard_deviation": 690418.91
+  },
+  "risk_tier": "MEDIUM",
+  "board_summary": {
+    "exposure_range": "$234,521 CAD to $1,805,231 CAD per year",
+    "most_likely_annual_loss": "$311,286 CAD",
+    "mean_annual_loss": "$891,856 CAD",
+    "risk_tier": "MEDIUM"
+  }
+}

@@ -32,7 +32,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate a YAML configuration against the OSFI B-13 policy schema."
     )
-    parser.add_argument("--config", required=True, type=Path, help="Path to YAML config file")
+    parser.add_argument(
+        "--config", required=True, type=Path, help="Path to YAML config file"
+    )
     parser.add_argument(
         "--schema",
         type=Path,

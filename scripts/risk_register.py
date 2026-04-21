@@ -37,17 +37,17 @@ import jsonschema
 _SCHEMA_PATH = Path(__file__).parent / "schema" / "risk_register_schema.json"
 
 # Residual score thresholds (inclusive lower bound, score = likelihood × impact)
-_RAG_RED_THRESHOLD   = 15
+_RAG_RED_THRESHOLD = 15
 _RAG_AMBER_THRESHOLD = 8
 
 _RAG_BADGES = {"Red": "🔴 Red", "Amber": "🟡 Amber", "Green": "🟢 Green"}
 
 # Default OSFI guideline reference inferred from risk category
 _CATEGORY_OSFI_REF: dict[str, str] = {
-    "technology":  "OSFI B-13 – Technology and Cyber Risk Management",
-    "cyber":       "OSFI B-13 – Technology and Cyber Risk Management",
+    "technology": "OSFI B-13 – Technology and Cyber Risk Management",
+    "cyber": "OSFI B-13 – Technology and Cyber Risk Management",
     "third-party": "OSFI B-10 – Third-Party Risk Management",
-    "data":        "OSFI B-13 §3 / Quebec Law 25 – Privacy Legislation",
+    "data": "OSFI B-13 §3 / Quebec Law 25 – Privacy Legislation",
     "operational": "OSFI E-21 – Operational Risk Management",
 }
 
@@ -90,16 +90,16 @@ def _enrich_entry(entry: dict[str, Any]) -> dict[str, Any]:
     inh = entry["inherent_risk"]
     out["inherent_risk"] = {
         "likelihood": inh["likelihood"],
-        "impact":     inh["impact"],
-        "score":      inh["likelihood"] * inh["impact"],
+        "impact": inh["impact"],
+        "score": inh["likelihood"] * inh["impact"],
     }
 
     res = entry["residual_risk"]
     res_score = res["likelihood"] * res["impact"]
     out["residual_risk"] = {
         "likelihood": res["likelihood"],
-        "impact":     res["impact"],
-        "score":      res_score,
+        "impact": res["impact"],
+        "score": res_score,
     }
 
     out["rag_status"] = calculate_rag(res_score)
@@ -140,15 +140,15 @@ def to_json(enriched: dict[str, Any], output_path: Path) -> None:
 
 def to_markdown(enriched: dict[str, Any], output_path: Path) -> None:
     """Write a formatted Markdown risk report to *output_path*."""
-    meta  = enriched["register_metadata"]
+    meta = enriched["register_metadata"]
     risks = enriched["risks"]
     today = date.today().isoformat()
 
     lines: list[str] = [
         f"# {meta['title']}",
         "",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| Version | {meta.get('version', '—')} |",
         f"| Created by | {meta.get('created_by', '—')} |",
         f"| Review cycle | {meta.get('review_cycle', '—')} |",
@@ -192,16 +192,16 @@ def to_markdown(enriched: dict[str, Any], output_path: Path) -> None:
 
     # ---- Per-risk detail sections ------------------------------------------
     for r in risks:
-        rag        = r["rag_status"]
-        rag_badge  = _RAG_BADGES.get(rag, rag)
-        inh        = r["inherent_risk"]
-        res        = r["residual_risk"]
+        rag = r["rag_status"]
+        rag_badge = _RAG_BADGES.get(rag, rag)
+        inh = r["inherent_risk"]
+        res = r["residual_risk"]
 
         lines += [
             f"### {r['id']} — {r['title']}",
             "",
-            f"| Field | Value |",
-            f"|-------|-------|",
+            "| Field | Value |",
+            "|-------|-------|",
             f"| **Category** | {r['category']} |",
             f"| **OSFI Reference** | {r.get('osfi_reference', '—')} |",
             f"| **Owner** | {r['owner']} |",
@@ -245,18 +245,18 @@ def to_markdown(enriched: dict[str, Any], output_path: Path) -> None:
 
 _TEMPLATE: dict[str, Any] = {
     "register_metadata": {
-        "title":        "OSFI Risk Register",
-        "version":      "1.0",
-        "created_by":   "Risk Management Team",
+        "title": "OSFI Risk Register",
+        "version": "1.0",
+        "created_by": "Risk Management Team",
         "review_cycle": "quarterly",
-        "description":  "Structured risk register aligned to OSFI B-10, B-13, and E-21.",
+        "description": "Structured risk register aligned to OSFI B-10, B-13, and E-21.",
     },
     "risks": [
         {
-            "id":          "RISK-001",
-            "title":       "Example Risk — replace with your risk title",
+            "id": "RISK-001",
+            "title": "Example Risk — replace with your risk title",
             "description": "Describe the risk event and its potential business impact.",
-            "category":    "technology",
+            "category": "technology",
             "osfi_reference": "",
             "inherent_risk": {"likelihood": 3, "impact": 4},
             "controls": [
@@ -264,7 +264,7 @@ _TEMPLATE: dict[str, Any] = {
                 "Describe control 2 (e.g. vulnerability scanning quarterly)",
             ],
             "residual_risk": {"likelihood": 2, "impact": 3},
-            "owner":       "CISO",
+            "owner": "CISO",
             "review_date": "2026-06-30",
         }
     ],
@@ -287,31 +287,35 @@ def _build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
-        "--input", metavar="FILE",
+        "--input",
+        metavar="FILE",
         help="Path to input JSON risk register file",
     )
     parser.add_argument(
-        "--output-json", metavar="FILE",
+        "--output-json",
+        metavar="FILE",
         default="reports/risk_register_output.json",
         help="Output path for enriched JSON (default: reports/risk_register_output.json)",
     )
     parser.add_argument(
-        "--output-md", metavar="FILE",
+        "--output-md",
+        metavar="FILE",
         default="reports/risk_register_report.md",
         help="Output path for Markdown report (default: reports/risk_register_report.md)",
     )
     parser.add_argument(
-        "--template", action="store_true",
+        "--template",
+        action="store_true",
         help="Write a blank template JSON to --output-json and exit",
     )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser  = _build_parser()
-    args    = parser.parse_args(argv)
+    parser = _build_parser()
+    args = parser.parse_args(argv)
     out_json = Path(args.output_json)
-    out_md   = Path(args.output_md)
+    out_md = Path(args.output_md)
 
     if args.template:
         to_json(_TEMPLATE, out_json)
@@ -338,7 +342,7 @@ def main(argv: list[str] | None = None) -> int:
     to_json(enriched, out_json)
     to_markdown(enriched, out_md)
 
-    reds   = sum(1 for r in enriched["risks"] if r["rag_status"] == "Red")
+    reds = sum(1 for r in enriched["risks"] if r["rag_status"] == "Red")
     ambers = sum(1 for r in enriched["risks"] if r["rag_status"] == "Amber")
     greens = sum(1 for r in enriched["risks"] if r["rag_status"] == "Green")
     print(

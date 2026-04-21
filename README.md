@@ -1,83 +1,115 @@
 # Canadian GRC Toolkit
 
-A policy-as-code toolkit for Canadian financial institutions implementing
-GRC (Governance, Risk and Compliance) controls aligned to OSFI guidance and
-Canadian data sovereignty requirements.
+Policy-as-code and reporting toolkit for Canadian financial-sector GRC work. This project helps teams validate controls, classify incidents, and produce board-ready risk reporting aligned to OSFI and Canadian privacy expectations.
 
-## Framework Coverage
+## Who This Is For
 
-| Framework | Coverage |
-|---|---|
-| OSFI B-10 (Third-Party Risk) | Partial |
-| OSFI Incident Reporting Advisory | Privileged access logging |
-| PIPEDA / Law 25 | Data residency enforcement |
-| NIST CSF | Encryption-at-rest controls |
+- GRC specialists and technology risk teams at Canadian banks
+- Security engineering teams implementing policy-as-code controls
+- Compliance and audit teams preparing evidence and management reporting
 
-## Repository Structure
+## What You Can Do
 
-| Folder | Contents |
-|---|---|
-| /policies | OPA Rego policy files and unit tests |
-| /oscal | OSCAL-formatted control documentation (JSON) |
-| /scripts | Python scripts for validation and reporting |
-| /docs | Design documentation and control narratives |
-| /reports | Generated compliance reports |
+- Validate core policy controls in OPA Rego
+- Parse and assess privileged access audit logs
+- Classify incidents for OSFI/PIPEDA notification thresholds
+- Generate risk register reports and KPI dashboards
+- Run FAIR quantitative risk simulations for management reporting
 
-## Policies Implemented
+## Quick Start
 
-- Data Residency: Enforces that all resources are provisioned in Canadian
-	regions (ca-central-1, ca-west-1) and that replication destinations are
-	also within Canada.
+Prerequisites:
 
-- Privileged Access Logging: Validates that privileged access events contain
-	fields required by OSFI incident reporting expectations, including actor
-	identity, MFA verification, and approved log destinations.
+- Python 3.11+
+- OPA installed and available in your PATH
 
-- Encryption-at-Rest: Checks that persistent resources use approved
-	algorithms, that sensitive resources use customer-managed keys (CMK), and
-	that key rotation is enabled.
+Setup:
 
-## Python Tooling
+1. Install Python dependencies
 
-- Config Validator: `scripts/config_validator.py` validates YAML policy
-	configuration against the OSFI B-13 schema in
-	`scripts/schema/osfi_b13_policy_schema.yaml`.
+   pip install -r scripts/requirements.txt
 
-- Audit Log Parser: `scripts/audit_log_parser.py` parses privileged access log
-	JSONL files and flags missing requirements aligned with OSFI incident
-	reporting expectations.
+2. Run full local quality checks
 
-## CI/CD
+   python scripts/task_runner.py lint
+   python scripts/task_runner.py test
 
-Every push runs:
-- OPA format check and policy unit tests
-- Python smoke tests
+3. Generate all sample reports
 
-Branch protection on main should require all checks to pass before merge.
+   python scripts/task_runner.py all-reports
 
-## Running Locally
+## Typical Commands
 
-Prerequisites: OPA installed, Python 3.11+
+Run policy tests:
 
-```bash
-# Run OPA policy tests
 opa test policies/ -v
 
-# Evaluate a policy against sample input
-opa eval \
-	-i input/sample_resource.json \
-	-d policies/ \
-	-d data/ \
-	"data.compliance.report"
+Run all Python tests:
 
-# Run Python smoke tests
-pip install -r scripts/requirements.txt
-python -m pytest scripts/tests/ -v
-```
+python scripts/task_runner.py test
 
-## Status
+Generate risk register outputs:
 
-| Week | Deliverable | Status |
-|---|---|---|
-| Week 1 | Repo setup, folder structure | Complete |
-| Week 2 | OPA policies, OSCAL JSON, Python scripts | Complete |
+python scripts/task_runner.py report-risk
+
+Generate KPI dashboard:
+
+python scripts/task_runner.py report-kpi
+
+Run incident classification:
+
+python scripts/task_runner.py classify-incident
+
+Run FAIR simulation:
+
+python scripts/task_runner.py fair
+
+## Output Files You Should Expect
+
+After running all reports, the reports folder includes:
+
+- reports/risk_register_output.json
+- reports/risk_register_report.md
+- reports/grc_kpi_dashboard.md
+- reports/notification_draft.json
+- reports/fair_results.json
+
+## Repository Map
+
+| Folder | Purpose |
+|---|---|
+| policies | OPA Rego policies and tests |
+| scripts | Python validation/reporting tools and tests |
+| reports | Generated reporting artifacts |
+| docs | Supporting walkthroughs and framework documentation |
+| oscal | OSCAL-aligned control documentation |
+
+## Contributing
+
+Install contributor hooks:
+
+1. pip install pre-commit
+2. pre-commit install
+3. pre-commit install --hook-type pre-push
+4. pre-commit run --all-files
+
+Windows tip for long-path issues during hook setup:
+
+1. $env:PRE_COMMIT_HOME = ".pcache"
+2. $env:VIRTUALENV_OVERRIDE_APP_DATA = ".vappdata"
+3. pre-commit run --all-files
+
+## Technical Detail Policy
+
+This README is intentionally usage-first.
+
+Detailed technical specifications, implementation rationale, and edge-case behavior should live in code comments and module docstrings in the scripts and policy files.
+
+## CI Overview
+
+CI runs:
+
+- OPA lint and policy tests
+- Python lint with ruff and black
+- Python tests and report generation checks
+- Golden output snapshot checks

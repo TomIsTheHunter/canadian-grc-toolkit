@@ -1,0 +1,31 @@
+{
+  "name": "Credential Stuffing Attack on Online Banking",
+  "description": "Automated credential stuffing campaign targeting the bank's online banking portal. Assumes threat actor uses leaked credential databases. Primary loss includes fraud, customer remediation, and forensic response. Secondary loss includes OSFI regulatory communication costs and reputational impact.",
+  "tef": {
+    "min": 1,
+    "most_likely": 4,
+    "max": 12,
+    "unit": "events per year",
+    "_note": "Industry data suggests large FIs face 2-6 credential attacks annually."
+  },
+  "vulnerability": {
+    "min": 0.05,
+    "most_likely": 0.15,
+    "max": 0.35,
+    "_note": "Probability that an attack bypasses MFA and account controls."
+  },
+  "plm": {
+    "min": 200000,
+    "most_likely": 1200000,
+    "max": 6000000,
+    "unit": "CAD",
+    "_note": "Fraud losses + forensics + customer notification + call centre surge."
+  },
+  "slm": {
+    "min": 50000,
+    "most_likely": 400000,
+    "max": 2000000,
+    "unit": "CAD",
+    "_note": "Regulatory engagement costs, potential PIPEDA-related remediation, brand recovery."
+  }
+}

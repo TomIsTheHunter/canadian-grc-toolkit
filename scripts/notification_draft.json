@@ -1,0 +1,161 @@
+{
+  "classification_version": "1.0",
+  "generated_at_utc": "2026-04-19T07:26:34.037076+00:00",
+  "incident_window": {
+    "first_detected_utc": "2026-04-18T08:15:00+00:00",
+    "latest_detected_utc": "2026-04-18T10:40:00+00:00"
+  },
+  "regulatory_assessment": {
+    "osfi": {
+      "twenty_four_hour_threshold_triggered": true,
+      "clock_start_utc": "2026-04-18T08:15:00+00:00",
+      "reporting_deadline_utc": "2026-04-19T08:15:00+00:00",
+      "deadline_overdue": false,
+      "reportable_event_count": 3,
+      "notification_draft": {
+        "institution_name": "Maple Bank",
+        "incident_reference": "OSFI-20260419-072634",
+        "date_time_detected_utc": "2026-04-18T08:15:00+00:00",
+        "reporting_deadline_utc": "2026-04-19T08:15:00+00:00",
+        "regulatory_timeframe_met": true,
+        "incident_status": "contained",
+        "highest_observed_severity": "high",
+        "systems_affected": [
+          "ciam",
+          "employee_endpoints",
+          "interac_gateway",
+          "online_banking_api",
+          "payments_switch",
+          "vendor_sftp"
+        ],
+        "known_customer_impact": true,
+        "estimated_records_affected": 12220,
+        "estimated_financial_loss_cad": 205000.0,
+        "prepared_by": "Cyber Incident Response Team",
+        "prepared_at_utc": "2026-04-19T07:26:34.037076+00:00"
+      }
+    },
+    "pipeda": {
+      "privacy_commissioner_notification_required": true,
+      "triggering_event_count": 1,
+      "notification_draft": {
+        "institution_name": "Maple Bank",
+        "opc_notification_required": true,
+        "privacy_breach_reference": "PIPEDA-20260419-072634",
+        "real_risk_of_significant_harm_assessed": true,
+        "individual_notification_required": true,
+        "total_records_with_personal_information": 12220,
+        "data_elements_impacted": [
+          "account_number",
+          "dob",
+          "email",
+          "name"
+        ],
+        "prepared_by": "Cyber Incident Response Team",
+        "prepared_at_utc": "2026-04-19T07:26:34.037076+00:00"
+      }
+    }
+  },
+  "events": [
+    {
+      "event_id": "EVT-1001",
+      "detected_at": "2026-04-18T08:15:00+00:00",
+      "event_type": "credential_compromise",
+      "severity": "high",
+      "systems_affected": [
+        "online_banking_api",
+        "ciam"
+      ],
+      "summary": "Suspicious privileged login and credential stuffing activity.",
+      "osfi": {
+        "reportable_to_osfi": true,
+        "reasons": [
+          "event_type_matches_osfi_material_incident_patterns",
+          "critical_operations_impacted",
+          "confirmed_data_exfiltration"
+        ]
+      },
+      "pipeda": {
+        "notify_privacy_commissioner": true,
+        "rrsoh_assessed": true,
+        "reasons": [
+          "sensitive_personal_information_involved",
+          "confirmed_or_likely_unauthorized_access",
+          "large_volume_of_records_affected",
+          "meaningful_risk_of_identity_or_account_fraud"
+        ]
+      }
+    },
+    {
+      "event_id": "EVT-1002",
+      "detected_at": "2026-04-18T08:50:00+00:00",
+      "event_type": "payment_outage",
+      "severity": "high",
+      "systems_affected": [
+        "payments_switch",
+        "interac_gateway"
+      ],
+      "summary": "Payment authorization unavailable for card and e-transfer channels.",
+      "osfi": {
+        "reportable_to_osfi": true,
+        "reasons": [
+          "event_type_matches_osfi_material_incident_patterns",
+          "critical_operations_impacted",
+          "service_disruption_over_60_minutes",
+          "financial_loss_over_100k_cad"
+        ]
+      },
+      "pipeda": {
+        "notify_privacy_commissioner": false,
+        "rrsoh_assessed": false,
+        "reasons": [
+          "no_personal_information_compromised"
+        ]
+      }
+    },
+    {
+      "event_id": "EVT-1003",
+      "detected_at": "2026-04-18T10:20:00+00:00",
+      "event_type": "third_party_breach",
+      "severity": "medium",
+      "systems_affected": [
+        "vendor_sftp"
+      ],
+      "summary": "Third-party file transfer platform reported unauthorized session.",
+      "osfi": {
+        "reportable_to_osfi": true,
+        "reasons": [
+          "event_type_matches_osfi_material_incident_patterns"
+        ]
+      },
+      "pipeda": {
+        "notify_privacy_commissioner": false,
+        "rrsoh_assessed": true,
+        "reasons": [
+          "no_rrsoh_indicators_met"
+        ]
+      }
+    },
+    {
+      "event_id": "EVT-1004",
+      "detected_at": "2026-04-18T10:40:00+00:00",
+      "event_type": "malware",
+      "severity": "medium",
+      "systems_affected": [
+        "employee_endpoints"
+      ],
+      "summary": "Commodity malware detected and removed on internal workstation.",
+      "osfi": {
+        "reportable_to_osfi": false,
+        "reasons": []
+      },
+      "pipeda": {
+        "notify_privacy_commissioner": false,
+        "rrsoh_assessed": false,
+        "reasons": [
+          "no_personal_information_compromised"
+        ]
+      }
+    }
+  ]
+}

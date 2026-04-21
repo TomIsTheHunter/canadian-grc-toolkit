@@ -15,7 +15,9 @@ REQUIRED_FIELDS = {
 APPROVED_DESTINATIONS = {"siem-prod", "immutable-audit-store"}
 
 
-def _read_json_lines(input_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _read_json_lines(
+    input_path: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     events: list[dict[str, Any]] = []
     findings: list[dict[str, Any]] = []
 
@@ -75,7 +77,10 @@ def _check_event(event: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
 
-    if "log_destination" in event and event["log_destination"] not in APPROVED_DESTINATIONS:
+    if (
+        "log_destination" in event
+        and event["log_destination"] not in APPROVED_DESTINATIONS
+    ):
         findings.append(
             {
                 "line": line,
@@ -100,7 +105,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Parse privileged access audit logs and flag OSFI reporting gaps."
     )
-    parser.add_argument("--input", required=True, type=Path, help="Path to JSONL audit log")
+    parser.add_argument(
+        "--input", required=True, type=Path, help="Path to JSONL audit log"
+    )
     parser.add_argument(
         "--output",
         type=Path,
