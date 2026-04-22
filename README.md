@@ -22,6 +22,7 @@ Prerequisites:
 
 - Python 3.11+
 - OPA installed and available in your PATH
+- Checkov installed and available in your PATH
 
 Setup:
 
@@ -37,6 +38,15 @@ Setup:
 3. Generate all sample reports
 
    python scripts/task_runner.py all-reports
+
+4. Run full compliance orchestration (single entry point)
+
+   python main.py --iac-dir . --opa-input scripts/fair_scenario.json --vendor-data scripts/sample_vendor_data.json --risk-register scripts/sample_risk_register.json
+
+   The orchestrator now performs a preflight check for required tools (`checkov` and `opa`) and fails fast with install guidance if they are missing.
+   If you need to run without these checks, use:
+
+   python main.py --iac-dir . --opa-input scripts/fair_scenario.json --vendor-data scripts/sample_vendor_data.json --risk-register scripts/sample_risk_register.json --skip-preflight
 
 ## Typical Commands
 
@@ -64,6 +74,10 @@ Run FAIR simulation:
 
 python scripts/task_runner.py fair
 
+Run full compliance orchestration from task runner:
+
+python scripts/task_runner.py full-compliance
+
 ## Output Files You Should Expect
 
 After running all reports, the reports folder includes:
@@ -73,6 +87,11 @@ After running all reports, the reports folder includes:
 - reports/grc_kpi_dashboard.md
 - reports/notification_draft.json
 - reports/fair_results.json
+
+After running `main.py`, additional consolidated outputs are generated:
+
+- reports/consolidated_compliance_report.json
+- reports/consolidated_compliance_report.md
 
 ## Repository Map
 

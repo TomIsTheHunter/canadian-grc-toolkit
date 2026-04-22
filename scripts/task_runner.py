@@ -101,6 +101,25 @@ def task_all_reports() -> None:
     task_fair()
 
 
+def task_full_compliance() -> None:
+    _run(
+        [
+            sys.executable,
+            "main.py",
+            "--iac-dir",
+            ".",
+            "--opa-input",
+            "scripts/fair_scenario.json",
+            "--vendor-data",
+            "scripts/sample_vendor_data.json",
+            "--risk-register",
+            "scripts/sample_risk_register.json",
+            "--policy-dir",
+            "policies",
+        ]
+    )
+
+
 TASKS = {
     "test": task_test,
     "lint": task_lint,
@@ -109,6 +128,7 @@ TASKS = {
     "classify-incident": task_classify_incident,
     "fair": task_fair,
     "all-reports": task_all_reports,
+    "full-compliance": task_full_compliance,
 }
 
 

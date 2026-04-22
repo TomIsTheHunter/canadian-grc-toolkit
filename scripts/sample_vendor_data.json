@@ -1,0 +1,28 @@
+{
+  "vendors": [
+    {
+      "vendor_id": "VEND-001",
+      "vendor_name": "Northern Cloud Services",
+      "criticality": "high",
+      "data_sensitivity": "high",
+      "concentration_risk": "medium",
+      "fourth_party_dependency": true,
+      "incident_history_count": 1,
+      "financial_health": "stable",
+      "exit_plan_tested": false,
+      "contract_has_osfi_b10_clauses": true
+    },
+    {
+      "vendor_id": "VEND-002",
+      "vendor_name": "Maple Payment Gateway",
+      "criticality": "critical",
+      "data_sensitivity": "critical",
+      "concentration_risk": "high",
+      "fourth_party_dependency": true,
+      "incident_history_count": 3,
+      "financial_health": "weak",
+      "exit_plan_tested": false,
+      "contract_has_osfi_b10_clauses": false
+    }
+  ]
+}
