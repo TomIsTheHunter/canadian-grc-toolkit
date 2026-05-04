@@ -27,6 +27,8 @@ from scripts.risk_register import process_register
 
 @dataclass
 class CommandResult:
+    """Execution metadata for an external command invocation."""
+
     command: list[str]
     exit_code: int | None
     stdout: str
@@ -36,6 +38,8 @@ class CommandResult:
 
 
 def _existing_path(value: str) -> Path:
+    """Argparse type helper that validates a path exists."""
+
     path = Path(value)
     if not path.exists():
         raise argparse.ArgumentTypeError(f"Path not found: {path}")
@@ -43,6 +47,8 @@ def _existing_path(value: str) -> Path:
 
 
 def _run_command(command: list[str]) -> CommandResult:
+    """Run a command and return structured output without raising on failure."""
+
     try:
         proc = subprocess.run(command, capture_output=True, text=True, check=False)
         return CommandResult(
@@ -64,6 +70,8 @@ def _run_command(command: list[str]) -> CommandResult:
 
 
 def _tool_install_hint(tool: str) -> str:
+    """Return operator guidance for installing a missing external dependency."""
+
     if tool == "checkov":
         return "Install with 'pip install checkov' (or pipx) and ensure it is in PATH"
     if tool == "opa":
@@ -72,6 +80,8 @@ def _tool_install_hint(tool: str) -> str:
 
 
 def run_preflight_stage() -> dict[str, Any]:
+    """Validate required external tools before running compliance stages."""
+
     required_tools = ["checkov", "opa"]
     checks: list[dict[str, Any]] = []
 
@@ -103,6 +113,8 @@ def run_preflight_stage() -> dict[str, Any]:
 
 
 def _discover_opa_packages(policy_dir: Path) -> list[str]:
+    """Extract package names declared in Rego files under policy_dir."""
+
     package_pattern = re.compile(r"^\s*package\s+([^\s]+)\s*$")
     packages: set[str] = set()
     for file_path in policy_dir.rglob("*.rego"):
@@ -115,6 +127,8 @@ def _discover_opa_packages(policy_dir: Path) -> list[str]:
 
 
 def _extract_opa_value(payload: dict[str, Any]) -> Any:
+    """Return the first OPA expression value from a JSON eval payload."""
+
     result = payload.get("result", [])
     if not result:
         return None
@@ -125,6 +139,8 @@ def _extract_opa_value(payload: dict[str, Any]) -> Any:
 
 
 def run_checkov_stage(iac_dir: Path) -> dict[str, Any]:
+    """Execute Checkov against IaC and return stage status plus summary metrics."""
+
     command = ["checkov", "-d", str(iac_dir), "--output", "json", "--soft-fail"]
     cmd = _run_command(command)
 
@@ -159,6 +175,8 @@ def run_checkov_stage(iac_dir: Path) -> dict[str, Any]:
 
 
 def _derive_opa_compliance(value: Any) -> bool | None:
+    """Normalize common OPA decision payload shapes into a compliance boolean."""
+
     if isinstance(value, bool):
         return value
     if isinstance(value, dict):
@@ -171,6 +189,8 @@ def _derive_opa_compliance(value: Any) -> bool | None:
 
 
 def run_opa_stage(policy_dir: Path, config_input: Path) -> dict[str, Any]:
+    """Evaluate policy decisions for discovered Canada-scoped Rego packages."""
+
     packages = [p for p in _discover_opa_packages(policy_dir) if p.startswith("canada.")]
     decisions: list[dict[str, Any]] = []
     stage_ok = True
@@ -243,6 +263,8 @@ def run_opa_stage(policy_dir: Path, config_input: Path) -> dict[str, Any]:
 
 
 def run_vendor_stage(vendor_data: Path) -> dict[str, Any]:
+    """Run OSFI B-10 vendor risk assessment and convert to stage format."""
+
     assessment = assess_vendor_risk_file(vendor_data)
     return {
         "stage": "osfi_b10_vendor_risk_assessment",
@@ -253,6 +275,8 @@ def run_vendor_stage(vendor_data: Path) -> dict[str, Any]:
 
 
 def run_risk_register_stage(risk_register: Path) -> dict[str, Any]:
+    """Score a risk register and summarize Red/Amber/Green distribution."""
+
     with risk_register.open(encoding="utf-8") as handle:
         raw = json.load(handle)
 
@@ -276,6 +300,8 @@ def run_risk_register_stage(risk_register: Path) -> dict[str, Any]:
 
 
 def _stage_result_with_error(stage_name: str, exc: Exception) -> dict[str, Any]:
+    """Return a normalized failed stage payload for unexpected exceptions."""
+
     return {
         "stage": stage_name,
         "ok": False,
@@ -292,6 +318,8 @@ def orchestrate(
     policy_dir: Path,
     skip_preflight: bool = False,
 ) -> dict[str, Any]:
+    """Run all compliance stages and assemble a consolidated report payload."""
+
     stages: list[dict[str, Any]] = []
 
     if not skip_preflight:
@@ -355,6 +383,8 @@ def orchestrate(
 
 
 def _render_markdown(report: dict[str, Any]) -> str:
+    """Render the consolidated report as a markdown summary table."""
+
     lines = [
         "# Consolidated Compliance Report",
         "",
@@ -417,6 +447,8 @@ def _render_markdown(report: dict[str, Any]) -> str:
 
 
 def _write_report(report: dict[str, Any], output_json: Path, output_md: Path) -> None:
+    """Persist consolidated outputs to JSON and markdown files."""
+
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_md.parent.mkdir(parents=True, exist_ok=True)
 
@@ -425,6 +457,8 @@ def _write_report(report: dict[str, Any], output_json: Path, output_md: Path) ->
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Construct CLI argument parser for end-to-end orchestration."""
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--iac-dir", type=_existing_path, required=True)
     parser.add_argument("--opa-input", type=_existing_path, required=True)
@@ -450,6 +484,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI entry point for running and exporting consolidated checks."""
+
     parser = _build_parser()
     args = parser.parse_args(argv)
 

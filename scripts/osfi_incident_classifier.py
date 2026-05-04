@@ -1,3 +1,5 @@
+"""Classify incident events for OSFI and PIPEDA notification workflows."""
+
 from __future__ import annotations
 
 import argparse
@@ -36,6 +38,8 @@ OSFI_REPORTABLE_EVENT_TYPES = {
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse CLI arguments for incident classification input and output paths."""
+
     parser = argparse.ArgumentParser(
         description=(
             "Classify mock security logs for OSFI and PIPEDA obligations and "
@@ -70,6 +74,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def parse_datetime(value: str) -> datetime:
+    """Parse an ISO-like datetime string and normalize to UTC."""
+
     if not value:
         return datetime.now(timezone.utc)
     value = value.strip()
@@ -82,6 +88,8 @@ def parse_datetime(value: str) -> datetime:
 
 
 def parse_bool(value: Any) -> bool:
+    """Coerce common text and numeric values to boolean."""
+
     if isinstance(value, bool):
         return value
     if value is None:
@@ -92,6 +100,8 @@ def parse_bool(value: Any) -> bool:
 
 
 def parse_float(value: Any) -> float:
+    """Coerce value to float with 0.0 fallback for invalid inputs."""
+
     if value in (None, ""):
         return 0.0
     try:
@@ -101,6 +111,8 @@ def parse_float(value: Any) -> float:
 
 
 def parse_int(value: Any) -> int:
+    """Coerce value to int with 0 fallback for invalid inputs."""
+
     if value in (None, ""):
         return 0
     try:
@@ -110,6 +122,8 @@ def parse_int(value: Any) -> int:
 
 
 def parse_list(value: Any) -> list[str]:
+    """Normalize list-like values into lowercase string lists."""
+
     if value is None:
         return []
     if isinstance(value, list):
@@ -122,6 +136,8 @@ def parse_list(value: Any) -> list[str]:
 
 
 def detect_format(path: Path, requested: str) -> str:
+    """Resolve input format from CLI choice or file extension."""
+
     if requested != "auto":
         return requested
     suffix = path.suffix.lower()
@@ -135,6 +151,8 @@ def detect_format(path: Path, requested: str) -> str:
 
 
 def load_events(path: Path, file_format: str) -> list[dict[str, Any]]:
+    """Load raw events from CSV or JSON input formats."""
+
     if file_format == "csv":
         with path.open("r", encoding="utf-8", newline="") as file:
             reader = csv.DictReader(file)
@@ -154,6 +172,8 @@ def load_events(path: Path, file_format: str) -> list[dict[str, Any]]:
 
 
 def normalize_event(raw_event: dict[str, Any], index: int) -> dict[str, Any]:
+    """Normalize one raw event into the classifier's canonical event schema."""
+
     event_id = str(raw_event.get("event_id") or f"EVT-{index:04d}")
     detected_at = parse_datetime(str(raw_event.get("detected_at") or ""))
 
@@ -187,6 +207,8 @@ def normalize_event(raw_event: dict[str, Any], index: int) -> dict[str, Any]:
 
 
 def classify_osfi(event: dict[str, Any]) -> dict[str, Any]:
+    """Apply OSFI material incident heuristics and return rationale details."""
+
     reasons: list[str] = []
 
     if event["event_type"] in OSFI_REPORTABLE_EVENT_TYPES:
@@ -215,6 +237,8 @@ def classify_osfi(event: dict[str, Any]) -> dict[str, Any]:
 
 
 def classify_pipeda(event: dict[str, Any]) -> dict[str, Any]:
+    """Assess PIPEDA breach notification indicators for a single event."""
+
     reasons: list[str] = []
 
     if not event["personal_data_compromised"]:
@@ -256,6 +280,8 @@ def classify_pipeda(event: dict[str, Any]) -> dict[str, Any]:
 
 
 def severity_rank(level: str) -> int:
+    """Return sortable numeric rank for textual severity levels."""
+
     table = {"low": 1, "medium": 2, "high": 3, "critical": 4}
     return table.get(level, 2)
 
@@ -263,6 +289,8 @@ def severity_rank(level: str) -> int:
 def compute_report(
     events: list[dict[str, Any]], institution: str, prepared_by: str
 ) -> dict[str, Any]:
+    """Build combined OSFI and PIPEDA regulatory assessment output."""
+
     enriched_events: list[dict[str, Any]] = []
 
     for event in events:
@@ -394,6 +422,8 @@ def compute_report(
 
 
 def main() -> int:
+    """CLI entry point to classify incident logs and write draft notifications."""
+
     args = parse_args()
     input_path = Path(args.input)
     if not input_path.exists():

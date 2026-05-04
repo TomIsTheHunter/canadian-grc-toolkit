@@ -1,3 +1,5 @@
+"""Tests for OSFI B-10 vendor risk scoring helpers."""
+
 from __future__ import annotations
 
 import json

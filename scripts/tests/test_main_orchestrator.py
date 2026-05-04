@@ -1,3 +1,5 @@
+"""Tests for consolidated orchestration behavior in main.py."""
+
 from __future__ import annotations
 
 import json

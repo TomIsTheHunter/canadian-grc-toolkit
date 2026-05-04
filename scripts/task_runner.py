@@ -19,19 +19,27 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def _run(command: list[str]) -> None:
+    """Execute a command from the repository root and fail on non-zero exit."""
+
     subprocess.run(command, cwd=ROOT, check=True)
 
 
 def task_test() -> None:
+    """Run the Python test suite."""
+
     _run([sys.executable, "-m", "pytest", "scripts/tests/", "-v", "--tb=short"])
 
 
 def task_lint() -> None:
+    """Run linting and formatting checks used by CI."""
+
     _run([sys.executable, "-m", "ruff", "check", "scripts"])
     _run([sys.executable, "-m", "black", "--check", "scripts"])
 
 
 def task_report_risk() -> None:
+    """Generate risk register JSON and markdown reports."""
+
     _run(
         [
             sys.executable,
@@ -48,6 +56,8 @@ def task_report_risk() -> None:
 
 
 def task_report_kpi() -> None:
+    """Generate the board-ready KPI markdown dashboard."""
+
     _run(
         [
             sys.executable,
@@ -63,6 +73,8 @@ def task_report_kpi() -> None:
 
 
 def task_classify_incident() -> None:
+    """Run incident classification and produce notification draft output."""
+
     _run(
         [
             sys.executable,
@@ -80,6 +92,8 @@ def task_classify_incident() -> None:
 
 
 def task_fair() -> None:
+    """Run FAIR simulation and write quantitative risk results."""
+
     _run(
         [
             sys.executable,
@@ -95,6 +109,8 @@ def task_fair() -> None:
 
 
 def task_all_reports() -> None:
+    """Generate all standard report artifacts in sequence."""
+
     task_report_risk()
     task_report_kpi()
     task_classify_incident()
@@ -102,6 +118,8 @@ def task_all_reports() -> None:
 
 
 def task_full_compliance() -> None:
+    """Execute the end-to-end compliance orchestrator entry point."""
+
     _run(
         [
             sys.executable,
@@ -133,6 +151,8 @@ TASKS = {
 
 
 def main() -> int:
+    """CLI entry point for invoking named repository tasks."""
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=sorted(TASKS.keys()))
     args = parser.parse_args()

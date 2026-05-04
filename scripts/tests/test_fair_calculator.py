@@ -1,3 +1,5 @@
+"""Tests for FAIR scenario parsing, simulation, and CLI output behavior."""
+
 from __future__ import annotations
 
 import json

@@ -21,6 +21,8 @@ _LEVEL_SCORES = {
 
 
 def _normalize_level(value: Any, default: str = "medium") -> str:
+    """Normalize a qualitative level string to lowercase with a fallback."""
+
     if value is None:
         return default
     text = str(value).strip().lower()
@@ -28,14 +30,20 @@ def _normalize_level(value: Any, default: str = "medium") -> str:
 
 
 def _bool_score(value: Any, true_score: int, false_score: int) -> int:
+    """Map a truthy/falsy value to predefined numeric scores."""
+
     return true_score if bool(value) else false_score
 
 
 def _level_score(level: str, default: int = 45) -> int:
+    """Resolve a qualitative level to a weighted numeric score."""
+
     return _LEVEL_SCORES.get(level, default)
 
 
 def _rag(score: float) -> str:
+    """Convert a numeric score into Red/Amber/Green status."""
+
     if score >= 70:
         return "Red"
     if score >= 40:
@@ -44,6 +52,8 @@ def _rag(score: float) -> str:
 
 
 def _tier(score: float) -> str:
+    """Convert a numeric score into low/medium/high/critical tier."""
+
     if score >= 85:
         return "critical"
     if score >= 70:
@@ -54,6 +64,8 @@ def _tier(score: float) -> str:
 
 
 def _required_actions(vendor: dict[str, Any], score: float) -> list[str]:
+    """Return recommended remediation actions based on vendor risk signals."""
+
     actions: list[str] = []
     if score >= 70:
         actions.append("Escalate to Third-Party Risk Committee")
@@ -67,6 +79,8 @@ def _required_actions(vendor: dict[str, Any], score: float) -> list[str]:
 
 
 def assess_vendor(vendor: dict[str, Any]) -> dict[str, Any]:
+    """Assess a single vendor and return scored factors and required actions."""
+
     criticality = _normalize_level(vendor.get("criticality"), "medium")
     data_sensitivity = _normalize_level(vendor.get("data_sensitivity"), "medium")
     concentration = _normalize_level(vendor.get("concentration_risk"), "medium")
@@ -119,6 +133,8 @@ def assess_vendor(vendor: dict[str, Any]) -> dict[str, Any]:
 
 
 def _load_vendor_payload(path: Path) -> list[dict[str, Any]]:
+    """Load vendor records from JSON list or object with a vendors array."""
+
     payload = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(payload, list):
         return payload
@@ -130,6 +146,8 @@ def _load_vendor_payload(path: Path) -> list[dict[str, Any]]:
 
 
 def assess_vendor_risk_file(path: Path) -> dict[str, Any]:
+    """Assess all vendors in a file and return aggregate risk summary."""
+
     vendors = _load_vendor_payload(path)
     assessed = [assess_vendor(vendor) for vendor in vendors]
     rag = {

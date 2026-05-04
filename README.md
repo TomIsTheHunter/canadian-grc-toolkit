@@ -16,6 +16,22 @@ Policy-as-code and reporting toolkit for Canadian financial-sector GRC work. Thi
 - Generate risk register reports and KPI dashboards
 - Run FAIR quantitative risk simulations for management reporting
 
+## Control Coverage Table
+
+This table maps implemented checks to framework-aligned control areas so reviewers can quickly understand coverage intent.
+
+| Check | Implementation | OSFI B-13 | OSFI B-10 | OSFI Incident Reporting Advisory | PIPEDA DERR | ISO 27001/27002 | NIST CSF 2.0 |
+|---|---|---|---|---|---|---|---|
+| Data residency policy validation | `policies/data_residency.rego` + tests | Data governance, information lifecycle, and legal/regulatory control alignment | Third-party data location considerations in outsourcing context | Supports impact scoping for reportable incidents involving data movement | Supports breach context and records-at-risk analysis | Information classification and data handling controls | `GV`, `PR.DS`, `ID` |
+| Encryption at rest policy validation | `policies/encryption_at_rest.rego` + tests | Cryptographic protection expectations for sensitive information | Contractual expectations for vendor encryption controls | Improves incident severity reduction and defensibility | Supports safeguard expectations for personal information | Cryptography and key management controls | `PR.DS` |
+| Privileged access logging checks | `policies/privileged_access_logging.rego` + `scripts/audit_log_parser.py` | Security monitoring, logging, and access governance controls | Third-party access oversight and monitoring evidence | Enables faster detection/escalation for reportable cyber events | Supports breach investigation and evidence retention | Logging, monitoring, and privileged access controls | `DE`, `PR.AA`, `RS` |
+| Third-party risk scoring | `scripts/osfi_b10_vendor_risk.py` | Third-party cyber risk integration with enterprise technology risk | Core B-10 due diligence, concentration, resilience, and exit planning themes | Flags vendor incidents likely to trigger reporting criteria | Supports vendor-breach impact and notification triage | Supplier relationship and third-party assurance controls | `GV`, `ID.SC` |
+| Incident classification and draft notifications | `scripts/osfi_incident_classifier.py` | Technology/cyber incident management capability | Vendor-involved incident escalation support | 24-hour trigger assessment and deadline tracking | OPC notification indicator assessment support | Incident response and communications controls | `RS`, `RC` |
+| Risk register scoring and markdown reporting | `scripts/risk_register.py` | Ongoing technology risk identification, assessment, and treatment tracking | Third-party risks can be represented and monitored in register outputs | Supports governance evidence for incident and resilience oversight | Documents residual privacy risk posture and treatment progress | Risk assessment and risk treatment process controls | `ID.RA`, `GV.RM` |
+| Board KPI dashboard generation | `scripts/grc_kpi_report.py` | Management and board-level cyber risk reporting evidence | Third-party treatment progress visibility at governance level | Supports escalation readiness and supervisory communication quality | Shows trend and remediation evidence for privacy-relevant risks | Performance measurement and continuous improvement controls | `GV`, `RS` |
+| FAIR quantitative simulation | `scripts/fair_calculator.py` | Quantitative cyber risk analysis for control investment decisions | Supports risk-based vendor oversight prioritization | Improves materiality assessment discipline during incidents | Supports financial impact framing for significant harm analysis | Risk quantification support for ISMS decision-making | `ID.RA` |
+| End-to-end orchestration and IaC scan | `main.py` + Checkov + OPA stages | Integrated control assurance workflow and evidence generation | Includes vendor and policy control checks in one run | Consolidates incident, control, and compliance signals for supervisors | Consolidates policy/privacy-relevant outputs for reporting workflows | Continuous compliance and control validation practices | `GV`, `DE`, `RS` |
+
 ## Quick Start
 
 Prerequisites:
@@ -102,6 +118,23 @@ After running `main.py`, additional consolidated outputs are generated:
 | reports | Generated reporting artifacts |
 | docs | Supporting walkthroughs and framework documentation |
 | oscal | OSCAL-aligned control documentation |
+
+## Folder Guides
+
+Use this root README as the primary entry point. Each major folder also has a local README with folder-specific details.
+
+- docs/README.md
+- docs/frameworks/README.md
+- docs/frameworks/osfi/README.md
+- docs/frameworks/legislation/README.md
+- docs/frameworks/standards/README.md
+- docs/cross-references/README.md
+- policies/README.md
+- scripts/README.md
+- scripts/tests/README.md
+- scripts/schema/README.md
+- reports/README.md
+- oscal/README.md
 
 ## Contributing
 

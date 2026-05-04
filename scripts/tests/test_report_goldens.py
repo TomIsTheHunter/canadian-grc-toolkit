@@ -1,3 +1,5 @@
+"""Golden snapshot tests for report output determinism."""
+
 from __future__ import annotations
 
 import os

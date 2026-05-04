@@ -1,3 +1,5 @@
+"""Tests for incident classification and event loading logic."""
+
 from __future__ import annotations
 
 import json
