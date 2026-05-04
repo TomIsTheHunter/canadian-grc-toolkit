@@ -1,0 +1,5 @@
+event_id,detected_at,contained_at,event_type,severity,systems_affected,service_disruption_minutes,financial_loss_cad,third_party_involved,personal_data_compromised,exfiltration_confirmed,records_affected,data_types,critical_operation_impacted,description
+EVT-1001,2026-04-18T08:15:00Z,2026-04-18T09:10:00Z,credential_compromise,high,online_banking_api;ciam,45,25000,false,true,true,12000,email;account_number;dob,true,Suspicious privileged login and credential stuffing activity.
+EVT-1002,2026-04-18T08:50:00Z,2026-04-18T09:30:00Z,payment_outage,high,payments_switch;interac_gateway,95,180000,false,false,false,0,,true,Payment authorization unavailable for card and e-transfer channels.
+EVT-1003,2026-04-18T10:20:00Z,2026-04-18T11:15:00Z,third_party_breach,medium,vendor_sftp,15,0,true,true,false,220,name;email,false,Third-party file transfer platform reported unauthorized session.
+EVT-1004,2026-04-18T10:40:00Z,2026-04-18T12:05:00Z,malware,medium,employee_endpoints,10,0,false,false,false,0,,false,Commodity malware detected and removed on internal workstation.

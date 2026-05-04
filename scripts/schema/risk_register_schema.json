@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OSFI-Aligned Risk Register",
+  "description": "Schema for the Canadian GRC Toolkit structured risk register. Supports OSFI B-10, B-13, and E-21 aligned categories.",
+  "type": "object",
+  "required": ["register_metadata", "risks"],
+  "additionalProperties": false,
+  "properties": {
+    "register_metadata": {
+      "type": "object",
+      "required": ["title", "version", "created_by", "review_cycle"],
+      "additionalProperties": false,
+      "properties": {
+        "title":        { "type": "string", "minLength": 1 },
+        "version":      { "type": "string", "minLength": 1 },
+        "created_by":   { "type": "string", "minLength": 1 },
+        "review_cycle": {
+          "type": "string",
+          "enum": ["quarterly", "semi-annual", "annual"]
+        },
+        "description":  { "type": "string" }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "title", "description", "category",
+          "inherent_risk", "controls", "residual_risk",
+          "owner", "review_date"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^RISK-\\d{3}$",
+            "description": "Unique risk identifier, format RISK-NNN (e.g. RISK-001)"
+          },
+          "title":       { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "category": {
+            "type": "string",
+            "enum": ["technology", "cyber", "third-party", "data", "operational"],
+            "description": "OSFI-aligned risk domain"
+          },
+          "osfi_reference": {
+            "type": "string",
+            "description": "Specific OSFI guideline section (e.g. OSFI B-13 §3.2). Auto-inferred from category if omitted."
+          },
+          "inherent_risk": { "$ref": "#/definitions/risk_score_input" },
+          "controls": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "List of controls applied to reduce inherent risk to residual risk"
+          },
+          "residual_risk": { "$ref": "#/definitions/risk_score_input" },
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Role or name of the risk owner"
+          },
+          "review_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Next scheduled review date in ISO 8601 format (YYYY-MM-DD)"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "risk_score_input": {
+      "type": "object",
+      "required": ["likelihood", "impact"],
+      "additionalProperties": false,
+      "properties": {
+        "likelihood": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Likelihood of occurrence on a 1–5 scale"
+        },
+        "impact": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Impact severity on a 1–5 scale"
+        }
+      }
+    }
+  }
+}

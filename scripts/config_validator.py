@@ -1,3 +1,5 @@
+"""Validate policy configuration files against repository schemas."""
+
 from __future__ import annotations
 
 import argparse
@@ -10,11 +12,15 @@ from jsonschema import Draft202012Validator
 
 
 def _load_yaml(path: Path) -> Any:
+    """Load YAML from disk and return parsed content."""
+
     with path.open("r", encoding="utf-8") as handle:
         return yaml.safe_load(handle)
 
 
 def validate_config(config_path: Path, schema_path: Path) -> list[str]:
+    """Return human-readable schema validation findings for a config file."""
+
     config = _load_yaml(config_path)
     schema = _load_yaml(schema_path)
 
@@ -29,10 +35,14 @@ def validate_config(config_path: Path, schema_path: Path) -> list[str]:
 
 
 def main() -> int:
+    """CLI entry point for schema-based configuration validation."""
+
     parser = argparse.ArgumentParser(
         description="Validate a YAML configuration against the OSFI B-13 policy schema."
     )
-    parser.add_argument("--config", required=True, type=Path, help="Path to YAML config file")
+    parser.add_argument(
+        "--config", required=True, type=Path, help="Path to YAML config file"
+    )
     parser.add_argument(
         "--schema",
         type=Path,

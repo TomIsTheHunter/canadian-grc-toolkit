@@ -33,8 +33,15 @@ def test_audit_log_parser_flags_missing_and_invalid_fields(tmp_path: Path) -> No
 
     assert any(f.get("issue") == "invalid_mfa" for f in findings)
     assert any(f.get("issue") == "unapproved_log_destination" for f in findings)
-    assert any(f.get("issue") == "missing_required_field" and f.get("field") == "timestamp" for f in findings)
-    assert any(f.get("issue") == "missing_required_field" and f.get("field") == "log_destination" for f in findings)
+    assert any(
+        f.get("issue") == "missing_required_field" and f.get("field") == "timestamp"
+        for f in findings
+    )
+    assert any(
+        f.get("issue") == "missing_required_field"
+        and f.get("field") == "log_destination"
+        for f in findings
+    )
 
 
 def test_audit_log_parser_flags_invalid_json(tmp_path: Path) -> None:

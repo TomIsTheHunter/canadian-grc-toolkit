@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+        files: ^(\.github/workflows/.*\.ya?ml|\.pre-commit-config\.yaml)$
+      - id: end-of-file-fixer
+        files: ^(scripts/.*|\.github/workflows/.*\.ya?ml|README\.md|\.pre-commit-config\.yaml)$
+      - id: trailing-whitespace
+        files: ^(scripts/.*|\.github/workflows/.*\.ya?ml|README\.md|\.pre-commit-config\.yaml)$
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^scripts/.*\.py$
+
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        files: ^scripts/.*\.py$
+
+  - repo: local
+    hooks:
+      - id: python-tests-pre-push
+        name: python-tests-pre-push
+        entry: python scripts/task_runner.py test
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

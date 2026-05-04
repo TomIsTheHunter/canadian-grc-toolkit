@@ -1,0 +1,59 @@
+{
+  "register_metadata": {
+    "title": "Golden Register",
+    "version": "1.0",
+    "created_by": "Golden Tests",
+    "review_cycle": "quarterly",
+    "description": "Deterministic fixture for golden output tests."
+  },
+  "risks": [
+    {
+      "id": "RISK-001",
+      "title": "Credential Stuffing",
+      "description": "Credential stuffing risk against digital channels.",
+      "category": "cyber",
+      "inherent_risk": {
+        "likelihood": 3,
+        "impact": 5,
+        "score": 15
+      },
+      "controls": [
+        "MFA",
+        "Rate limiting"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 4,
+        "score": 8
+      },
+      "owner": "VP Cybersecurity",
+      "review_date": "2026-06-30",
+      "rag_status": "Amber",
+      "osfi_reference": "OSFI B-13 \u2013 Technology and Cyber Risk Management"
+    },
+    {
+      "id": "RISK-002",
+      "title": "Privileged Access Abuse",
+      "description": "Undetected admin misuse across critical systems.",
+      "category": "operational",
+      "inherent_risk": {
+        "likelihood": 4,
+        "impact": 4,
+        "score": 16
+      },
+      "controls": [
+        "PAM",
+        "Session logging"
+      ],
+      "residual_risk": {
+        "likelihood": 2,
+        "impact": 2,
+        "score": 4
+      },
+      "owner": "Director IAM",
+      "review_date": "2026-09-30",
+      "rag_status": "Green",
+      "osfi_reference": "OSFI E-21 \u2013 Operational Risk Management"
+    }
+  ]
+}

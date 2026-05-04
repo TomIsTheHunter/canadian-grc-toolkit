@@ -1,3 +1,5 @@
+"""Parse privileged access audit logs and flag control violations."""
+
 from __future__ import annotations
 
 import argparse
@@ -15,7 +17,11 @@ REQUIRED_FIELDS = {
 APPROVED_DESTINATIONS = {"siem-prod", "immutable-audit-store"}
 
 
-def _read_json_lines(input_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _read_json_lines(
+    input_path: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Read JSONL events and collect record-level parsing findings."""
+
     events: list[dict[str, Any]] = []
     findings: list[dict[str, Any]] = []
 
@@ -53,6 +59,8 @@ def _read_json_lines(input_path: Path) -> tuple[list[dict[str, Any]], list[dict[
 
 
 def _check_event(event: dict[str, Any]) -> list[dict[str, Any]]:
+    """Validate one event against required fields and destination controls."""
+
     line = int(event.get("_line", -1))
     findings: list[dict[str, Any]] = []
 
@@ -75,7 +83,10 @@ def _check_event(event: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
 
-    if "log_destination" in event and event["log_destination"] not in APPROVED_DESTINATIONS:
+    if (
+        "log_destination" in event
+        and event["log_destination"] not in APPROVED_DESTINATIONS
+    ):
         findings.append(
             {
                 "line": line,
@@ -88,6 +99,8 @@ def _check_event(event: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def parse_audit_log(input_path: Path) -> list[dict[str, Any]]:
+    """Parse a JSONL audit log and return all detected findings."""
+
     events, findings = _read_json_lines(input_path)
 
     for event in events:
@@ -97,10 +110,14 @@ def parse_audit_log(input_path: Path) -> list[dict[str, Any]]:
 
 
 def main() -> int:
+    """CLI entry point for privileged access audit log validation."""
+
     parser = argparse.ArgumentParser(
         description="Parse privileged access audit logs and flag OSFI reporting gaps."
     )
-    parser.add_argument("--input", required=True, type=Path, help="Path to JSONL audit log")
+    parser.add_argument(
+        "--input", required=True, type=Path, help="Path to JSONL audit log"
+    )
     parser.add_argument(
         "--output",
         type=Path,
