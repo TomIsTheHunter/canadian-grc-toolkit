@@ -42,11 +42,26 @@ Prerequisites:
 
 Setup:
 
-1. Install Python dependencies
+1. Create and activate a virtual environment
 
+   **Windows (PowerShell):**
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+   **macOS/Linux:**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+2. Install Python dependencies
+
+   ```
    pip install -r scripts/requirements.txt
+   ```
 
-2. Run full local quality checks
+3. Run full local quality checks
 
    python scripts/task_runner.py lint
    python scripts/task_runner.py test
