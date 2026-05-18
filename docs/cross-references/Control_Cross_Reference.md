@@ -14,7 +14,7 @@
 ## How to Use This Document
 
 | Column | Framework | Reference Format |
-|--------|-----------|-----------------|
+|--------|-----------|------------------|
 | **OSFI E-21** | OSFI Guideline E-21 — Operational Risk and Resilience Management | Section number (e.g., §3.2, §5.1) |
 | **ISO 27001 Annex A** | ISO/IEC 27001:2022 Annex A (93 controls across 4 themes) | Control number (e.g., A.5.24, A.8.16) |
 | **SOC 2 CC** | AICPA Trust Services Criteria — Common Criteria (CC1–CC9) and Availability (A1) | Criterion code (e.g., CC6.1, CC7.3, A1.2) |
