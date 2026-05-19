@@ -24,13 +24,14 @@ from scripts.risk_register import (
     to_json,
     to_markdown,
 )
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 
-def _make_entry(**overrides) -> dict:
+def _make_entry(**overrides) -> dict[str, Any]:
     """Return a minimal valid risk entry, with optional field overrides."""
     base = {
         "id": "RISK-001",
@@ -47,7 +48,7 @@ def _make_entry(**overrides) -> dict:
     return base
 
 
-def _make_register(*entries) -> dict:
+def _make_register(*entries) -> dict[str, Any]:
     """Wrap one or more entries in a valid register envelope."""
     return {
         "register_metadata": {

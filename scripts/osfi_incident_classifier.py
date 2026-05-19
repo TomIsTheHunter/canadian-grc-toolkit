@@ -9,7 +9,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-
 SENSITIVE_DATA_TYPES = {
     "sin",
     "social_insurance_number",

@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 _LEVEL_SCORES = {
     "low": 15,
     "medium": 45,

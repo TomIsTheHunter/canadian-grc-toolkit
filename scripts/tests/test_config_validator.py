@@ -25,8 +25,7 @@ controls:
     approved_algorithms:
       - AES256
     require_cmk_for_sensitive: true
-""".strip()
-        + "\n",
+""".strip() + "\n",
         encoding="utf-8",
     )
 
@@ -51,8 +50,7 @@ controls:
   encryption_at_rest:
     approved_algorithms:
       - AES256
-""".strip()
-        + "\n",
+""".strip() + "\n",
         encoding="utf-8",
     )
 

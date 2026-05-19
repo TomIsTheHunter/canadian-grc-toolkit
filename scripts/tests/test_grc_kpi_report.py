@@ -7,9 +7,10 @@ from pathlib import Path
 
 from scripts.grc_kpi_report import analyze_kpis, render_markdown, write_markdown_report
 from scripts.risk_register import process_register
+from typing import Any
 
 
-def _make_entry(**overrides) -> dict:
+def _make_entry(**overrides) -> dict[str, Any]:
     base = {
         "id": "RISK-001",
         "title": "Legacy Core Platform",
@@ -25,7 +26,7 @@ def _make_entry(**overrides) -> dict:
     return base
 
 
-def _make_register(*entries) -> dict:
+def _make_register(*entries) -> dict[str, Any]:
     return {
         "register_metadata": {
             "title": "GRC KPI Test Register",

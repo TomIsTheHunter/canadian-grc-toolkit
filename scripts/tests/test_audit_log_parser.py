@@ -8,8 +8,7 @@ def test_audit_log_parser_passes_compliant_events(tmp_path: Path) -> None:
     audit_file.write_text(
         """
 {"actor_id":"admin-01","event_type":"privileged-login","timestamp":"2026-04-09T12:00:00Z","mfa_verified":true,"log_destination":"siem-prod"}
-""".strip()
-        + "\n",
+""".strip() + "\n",
         encoding="utf-8",
     )
 
@@ -24,8 +23,7 @@ def test_audit_log_parser_flags_missing_and_invalid_fields(tmp_path: Path) -> No
         """
 {"actor_id":"admin-01","event_type":"privileged-login","timestamp":"2026-04-09T12:00:00Z","mfa_verified":false,"log_destination":"local-disk"}
 {"actor_id":"admin-02","event_type":"privileged-command","mfa_verified":true}
-""".strip()
-        + "\n",
+""".strip() + "\n",
         encoding="utf-8",
     )
 

@@ -9,7 +9,6 @@ from pathlib import Path
 from scripts.grc_kpi_report import analyze_kpis, render_markdown
 from scripts.risk_register import process_register, to_json
 
-
 GOLDEN_DIR = Path(__file__).parent / "golden"
 
 

@@ -34,8 +34,7 @@ import json
 import random
 import statistics
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
-
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Beta-PERT sampling
@@ -44,7 +43,7 @@ from typing import Any, Dict, List, Tuple
 
 def _pert_alpha_beta(
     minimum: float, mode: float, maximum: float, gamma: float = 4.0
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Return (alpha, beta) shape parameters for the Beta-PERT distribution.
 
     Standard derivation:
@@ -83,14 +82,12 @@ _SCENARIO_FIELDS = {
     "vulnerability": "Vulnerability – probability of action succeeding (0–1)",
     "plm": "Primary Loss Magnitude per event (CAD)",
 }
-_OPTIONAL_SCENARIO_FIELDS = {
-    "slm": "Secondary Loss Magnitude per event (CAD) – e.g. fines, reputational loss",
-}
+_SLM_LABEL = "Secondary Loss Magnitude per event (CAD) – e.g. fines, reputational loss"
 
 
 def _parse_triplet(
-    data: Dict[str, Any], field: str, label: str
-) -> Tuple[float, float, float]:
+    data: dict[str, Any], field: str, label: str
+) -> tuple[float, float, float]:
     block = data.get(field)
     if block is None:
         raise ValueError(f"Missing required scenario field: '{field}' ({label})")
@@ -113,8 +110,8 @@ def _parse_triplet(
     return low, ml, high
 
 
-def parse_scenario(data: Dict[str, Any]) -> Dict[str, Any]:
-    scenario: Dict[str, Any] = {
+def parse_scenario(data: dict[str, Any]) -> dict[str, Any]:
+    scenario: dict[str, Any] = {
         "name": str(data.get("name", "Unnamed Scenario")),
         "description": str(data.get("description", "")),
     }
@@ -122,7 +119,7 @@ def parse_scenario(data: Dict[str, Any]) -> Dict[str, Any]:
         scenario[field] = _parse_triplet(data, field, label)
     # Optional secondary loss magnitude
     if "slm" in data:
-        scenario["slm"] = _parse_triplet(data, "slm", _OPTIONAL_SCENARIO_FIELDS["slm"])
+        scenario["slm"] = _parse_triplet(data, "slm", _SLM_LABEL)
     else:
         scenario["slm"] = (0.0, 0.0, 0.0)
     return scenario
@@ -134,14 +131,14 @@ def parse_scenario(data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def simulate(
-    scenario: Dict[str, Any], iterations: int = 100_000, seed: int | None = 42
-) -> List[float]:
+    scenario: dict[str, Any], iterations: int = 100_000, seed: int | None = 42
+) -> list[float]:
     """
     Run the FAIR simulation.
     Returns a list of `iterations` ALE (Annualised Loss Exposure) samples in CAD.
     """
     rng = random.Random(seed)
-    ale_samples: List[float] = []
+    ale_samples: list[float] = []
 
     tef_min, tef_ml, tef_max = scenario["tef"]
     vuln_min, vuln_ml, vuln_max = scenario["vulnerability"]
@@ -165,7 +162,7 @@ def simulate(
 # ---------------------------------------------------------------------------
 
 
-def _percentile(sorted_data: List[float], pct: float) -> float:
+def _percentile(sorted_data: list[float], pct: float) -> float:
     if not sorted_data:
         return 0.0
     index = (len(sorted_data) - 1) * pct / 100.0
@@ -175,7 +172,7 @@ def _percentile(sorted_data: List[float], pct: float) -> float:
     return sorted_data[lower] + fraction * (sorted_data[upper] - sorted_data[lower])
 
 
-def _find_mode(sorted_data: List[float], bins: int = 200) -> float:
+def _find_mode(sorted_data: list[float], bins: int = 200) -> float:
     """Estimate the mode via a histogram on the sorted samples."""
     if len(sorted_data) < 2:
         return sorted_data[0] if sorted_data else 0.0
@@ -191,7 +188,7 @@ def _find_mode(sorted_data: List[float], bins: int = 200) -> float:
     return low + (peak_bucket + 0.5) * width
 
 
-def aggregate(ale_samples: List[float], scenario: Dict[str, Any]) -> Dict[str, Any]:
+def aggregate(ale_samples: list[float], scenario: dict[str, Any]) -> dict[str, Any]:
     sorted_samples = sorted(ale_samples)
     mean = statistics.mean(ale_samples)
     stdev = statistics.stdev(ale_samples) if len(ale_samples) > 1 else 0.0
@@ -267,7 +264,7 @@ def aggregate(ale_samples: List[float], scenario: Dict[str, Any]) -> Dict[str, A
 # ---------------------------------------------------------------------------
 
 
-def print_report(result: Dict[str, Any]) -> None:
+def print_report(result: dict[str, Any]) -> None:
     ale = result["annualised_loss_exposure_cad"]
     bs = result["board_summary"]
 

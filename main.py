@@ -354,12 +354,12 @@ def orchestrate(
 
     try:
         stages.append(run_vendor_stage(vendor_data))
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         stages.append(_stage_result_with_error("osfi_b10_vendor_risk_assessment", exc))
 
     try:
         stages.append(run_risk_register_stage(risk_register))
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         stages.append(_stage_result_with_error("risk_register_scoring", exc))
 
     overall_compliant = all(stage.get("compliant") is True for stage in stages)

@@ -2,3 +2,5 @@ pytest==8.3.5
 PyYAML==6.0.2
 jsonschema==4.23.0
 checkov==3.2.529
+ruff==0.15.13
+black==26.5.1

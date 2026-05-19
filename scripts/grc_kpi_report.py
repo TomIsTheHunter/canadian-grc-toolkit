@@ -211,9 +211,14 @@ def analyze_kpis(enriched: dict[str, Any], as_of: date | None = None) -> dict[st
     high_or_critical = sum(
         1 for finding in findings if finding["severity"] in {"High", "Critical"}
     )
-    avg_treatment_completion = round(
-        sum(finding["treatment_completion"] for finding in findings) / open_findings,
-        1,
+    avg_treatment_completion = (
+        round(
+            sum(finding["treatment_completion"] for finding in findings)
+            / open_findings,
+            1,
+        )
+        if open_findings > 0
+        else 0.0
     )
 
     trend_metrics = _mock_prior_period(

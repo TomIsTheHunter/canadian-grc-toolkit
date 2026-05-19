@@ -76,16 +76,22 @@ Location: scripts
 What it contains:
 - Config validator: checks YAML config against an OSFI B-13 schema
 - Audit log parser: scans privileged access logs for missing required details
-- Checkov gap report: parses Checkov JSON scanner output into a formatted compliance gap report
-- OSFI B-10 gap assessment tool: assesses the FRFI's internal compliance posture across six B-10 domains
+- OSFI B-10 vendor risk assessment: scores third-party vendors across due diligence, concentration, resilience, data residency, audit rights, and exit planning; produces RAG-rated JSON output
+- OSFI incident classifier: evaluates security events against OSFI and PIPEDA notification triggers; produces a draft notification with deadline tracking
+- Risk register: inherent/residual scoring, RAG status, OSFI-aligned categories, JSON schema validation, and Markdown export
+- GRC KPI dashboard: derives board-ready KPI views from the risk register, including control effectiveness, overdue items, and category rollup
+- FAIR quantitative risk calculator: Monte Carlo simulation over the FAIR taxonomy producing ALE distributions and risk tier
+- Task runner: convenience wrapper for common local and CI workflows (test, lint, all-reports, full-compliance)
+- Main orchestrator (`main.py`): end-to-end pipeline — Checkov IaC scan, OPA policy evaluation, vendor risk assessment, and risk register scoring — producing a consolidated compliance report
 - Unit tests for each script
-- Schema files used by the validator and B-10 assessment
+- Schema files used by the validator and risk register
 
 Why this matters:
 - The validator prevents bad or incomplete configuration from silently entering operations.
 - The parser identifies logging gaps tied to incident reporting obligations.
-- The Checkov gap report turns raw infrastructure-as-code scan output into an audit-ready summary showing failed controls, skipped controls (with suppression reasons), and overall pass rate.
-- The B-10 gap assessment tool provides a structured, machine-readable way to evaluate the FRFI's own third-party risk management posture — not vendor self-attestation — across arrangement classification, subcontracting, concentration, data residency, audit rights, and exit strategy. It flags supervisory risk items for critical arrangements and generates a completed or blank assessment file on demand.
+- The vendor risk tool produces structured, auditable vendor scores tied to B-10 themes.
+- The incident classifier reduces response time to OSFI 24-hour notification deadlines.
+- The orchestrator consolidates all control signals into a single machine-readable compliance report per run.
 
 Why Python for these tools:
 - Easy readability for mixed teams.
@@ -112,25 +118,26 @@ Why not keep this only in issue tickets or chat history:
 - Tickets/chats are fragmented and not durable as audit evidence.
 - Repository docs provide versioned, reviewable history.
 
-### E) CI workflow
+### E) Task runner and local quality gate
 
-Location: .github/workflows/ci.yml
+Location: scripts/task_runner.py
 
 What it does:
-- Runs OPA formatting and policy tests
-- Runs Python tests (covers config validator, audit log parser, Checkov gap report, and all B-10 assessment logic)
-- Validates the OSFI B-10 CLI can generate a template and produces valid JSON
-- Validates the Checkov gap report CLI accepts its arguments without error
-- Validates the risk register CLI can generate a template, process a sample register, and produce valid JSON output (rag_status and score fields present on every entry)
+- `test` — runs the full pytest suite
+- `lint` — runs Ruff (linting) and Black (formatting checks)
+- `report-risk` — generates risk register JSON and Markdown outputs from sample data
+- `report-kpi` — generates the board-ready KPI dashboard
+- `classify-incident` — runs the incident classifier and produces a notification draft
+- `fair` — runs the FAIR Monte Carlo simulation
+- `all-reports` — runs all report-generation tasks in sequence
+- `full-compliance` — runs the main orchestrator end-to-end with sample inputs
 
 Why this matters:
-- Prevents untested changes from being merged.
-- Provides objective pass/fail evidence per change.
-- CLI entrypoint validation catches import errors and wiring problems that unit tests alone may not surface.
+- Provides a single entry point for every common workflow, reducing onboarding friction.
+- Makes it straightforward to add CI integration: each task maps directly to a CI step.
 
-Why CI checks instead of trusting local testing only:
-- Local runs vary by machine and can be skipped.
-- CI gives a standardized, centrally recorded gate.
+Why not Makefile:
+- Python is already a project dependency; using it avoids a separate toolchain dependency for Windows contributors.
 
 ### F) Risk register
 
@@ -164,20 +171,24 @@ Why not a GRC platform or spreadsheet:
 - Off-the-shelf GRC platforms: licensing cost, vendor lock-in, and reduced transparency for audit evidence generated by opaque calculation engines.
 - This approach: open, version-controlled, testable, and fully auditable in the same repository as the controls it documents.
 
-## 5) What has been completed this week
+## 5) What has been completed
 
-Completed deliverables (cumulative through Week 4):
-- Three OPA policies written
-- OPA tests written and passing
-- OSCAL JSON document created with 3 B-13 controls
-- Python config validator written and tested
-- Python audit log parser written and tested
-- Python Checkov gap report script written (parses passed/failed/skipped checks, filtered console report with tabulate, optional CSV export, --framework and --severity flags)
-- Python OSFI B-10 gap assessment tool written and tested (six-domain JSON schema, compliance scoring, supervisory risk detection, template generation, CSV export)
-- Python risk register written and tested (inherent/residual risk scoring, RAG status, OSFI-aligned categories, JSON schema validation, JSON and Markdown export, template generation)
+Completed deliverables:
+- Three OPA policies written (data residency, encryption at rest, privileged access logging)
+- OPA unit tests written and passing for all three policies
+- OSCAL JSON document created with three OSFI B-13 controls
+- Python config validator written and tested (YAML config against OSFI B-13 schema)
+- Python audit log parser written and tested (privileged access log compliance checks)
+- Python OSFI B-10 vendor risk assessment tool written and tested (RAG-rated vendor scoring across six B-10 themes)
+- Python OSFI incident classifier written and tested (OSFI and PIPEDA notification trigger assessment, draft notification output)
+- Python risk register written and tested (inherent/residual scoring, RAG status, OSFI-aligned categories, JSON schema validation, JSON and Markdown export, template generation)
+- Python GRC KPI dashboard written and tested (control effectiveness, severity/age breakdown, overdue items, category rollup, trend baselines)
+- Python FAIR quantitative risk calculator written and tested (Beta-PERT Monte Carlo simulation, ALE distribution, risk tier)
+- Python main orchestrator written and tested (Checkov IaC scan, OPA evaluation, vendor risk, risk register — consolidated JSON and Markdown report)
+- Python task runner written (test, lint, all-reports, full-compliance tasks)
 - Risk register JSON schema (draft-07) covering all required fields with enum, pattern, range, and format constraints
-- Sample risk register with six realistic entries spanning technology, cyber, third-party, data, and operational categories
-- CI workflow updated with CLI validation steps for risk register template generation and sample register processing
+- Sample data for all tools: risk register, vendor data, security logs, FAIR scenario
+- Full unit test suite (60 tests) with golden file coverage for report outputs
 
 ## 6) Why we did not choose other broader paths yet
 
